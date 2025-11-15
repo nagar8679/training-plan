@@ -5,10 +5,1056 @@
   <title>אפליקציית אימונים – דשבורד מלא</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- styles omitted for brevity in this explanation; full styles are included in the actual file -->
+
+  <style>
+    :root {
+      --bg-main: #020617;
+      --accent: #f97316;
+      --accent-soft: rgba(249,115,22,0.12);
+      --accent-strong: #fb923c;
+      --accent-strong2: #ef4444;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-subtle: #1e293b;
+      --shadow-soft: 0 22px 55px rgba(0,0,0,0.75);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #020617 0, #020617 40%, #000 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    .app-shell {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 14px 10px 34px;
+    }
+
+    /* ===== TOP BAR ===== */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: conic-gradient(from 210deg, #f97316, #facc15, #f97316);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 2px #020617, 0 0 18px rgba(249,115,22,0.7);
+    }
+
+    .brand-logo span {
+      font-weight: 800;
+      color: #020617;
+      font-size: 18px;
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 19px;
+      letter-spacing: 0.04em;
+    }
+
+    .brand-text h1 span {
+      color: var(--accent);
+    }
+
+    .brand-text p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .top-summary {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill-stat {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.9), rgba(15,23,42,0.98));
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #e5e7eb;
+    }
+
+    .pill-stat span.icon {
+      font-size: 13px;
+    }
+
+    /* ===== DAY STRIP ===== */
+    .day-strip {
+      margin-top: 4px;
+      margin-bottom: 16px;
+      padding: 6px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.9), rgba(15,23,42,0.98));
+      border: 1px solid rgba(30,64,175,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .day-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .day-button {
+      border: none;
+      padding: 6px 13px;
+      border-radius: 999px;
+      font-size: 12px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid transparent;
+      transition: 0.16s ease-out;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .day-button span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #475569;
+    }
+
+    .day-button.active {
+      background: var(--accent);
+      color: #020617;
+      border-color: rgba(15,23,42,0.9);
+      box-shadow: 0 0 0 1px rgba(15,23,42,0.8), 0 0 16px rgba(249,115,22,0.7);
+    }
+
+    .day-button.active span.dot {
+      background: #020617;
+    }
+
+    .week-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: left;
+    }
+
+    .week-label span {
+      color: var(--accent-strong);
+      font-weight: 600;
+    }
+
+    /* ===== GRID ===== */
+    .layout-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2.8fr) minmax(280px, 2.2fr);
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 980px) {
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .layout-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .day-strip {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    /* ===== MAIN CARD ===== */
+    .card {
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.96), rgba(2,6,23,0.98));
+      border-radius: 20px;
+      padding: 14px 14px 14px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(30,64,175,0.7);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(248,113,113,0.14), transparent 60%);
+      pointer-events: none;
+    }
+
+    .card-inner { position: relative; z-index: 1; }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .card-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .card-subtitle {
+      margin: 0;
+      font-size: 12px;
+      color: var(--accent-strong2);
+      font-weight: 500;
+    }
+
+    .badge-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(22,163,74,0.18);
+      border: 1px solid rgba(22,163,74,0.6);
+      color: #bbf7d0;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .badge-live span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.32);
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(55,65,81,0.85);
+      color: #cbd5f5;
+    }
+
+    .meta-pill span.icon {
+      font-size: 13px;
+    }
+
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 11px;
+    }
+
+    .controls-row label {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .controls-row input[type="date"] {
+      background: #020617;
+      border-radius: 10px;
+      border: 1px solid #1e293b;
+      color: #e5e7eb;
+      padding: 4px 8px;
+      font-size: 11px;
+      min-width: 140px;
+    }
+
+    .btn-reset {
+      border: none;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      background: rgba(220,38,38,0.96);
+      color: #fee2e2;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 0 0 1px rgba(127,29,29,0.9);
+      white-space: nowrap;
+    }
+
+    .btn-reset:hover { background: #b91c1c; }
+
+    .info-text {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    /* ===== TABLE ===== */
+    .table-wrapper {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #111827;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.98), rgba(15,23,42,0.98));
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    thead {
+      background: #020617;
+    }
+
+    th, td {
+      padding: 6px 6px;
+      border-bottom: 1px solid rgba(31,41,55,0.9);
+      text-align: center;
+    }
+
+    th {
+      font-weight: 600;
+      color: #cbd5f5;
+      letter-spacing: 0.02em;
+      background: linear-gradient(90deg, rgba(15,23,42,0.98), rgba(15,23,42,0.92));
+    }
+
+    tbody tr:nth-child(even) td { background: rgba(15,23,42,0.96); }
+    tbody tr:nth-child(odd) td { background: rgba(15,23,42,0.98); }
+
+    tbody tr:hover td {
+      background: rgba(30,64,175,0.42);
+    }
+
+    td.name-col {
+      text-align: right;
+      font-weight: 500;
+      font-size: 11px;
+      color: #e5e7eb;
+    }
+
+    td.muscle-col {
+      color: #c4b5fd;
+      white-space: nowrap;
+    }
+
+    .badge-muscle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(30,64,175,0.22);
+      border: 1px solid rgba(59,130,246,0.6);
+      font-size: 10px;
+    }
+
+    .badge-muscle span.dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(59,130,246,0.9);
+    }
+
+    input[type="number"], input[type="text"] {
+      width: 100%;
+      max-width: 130px;
+      background: #020617;
+      border-radius: 8px;
+      border: 1px solid #1f2937;
+      color: var(--text-main);
+      font-size: 11px;
+      padding: 3px 6px;
+    }
+
+    input[type="number"]::placeholder,
+    input[type="text"]::placeholder {
+      color: #6b7280;
+    }
+
+    input[type="number"]:focus,
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(249,115,22,0.45);
+    }
+
+    /* ===== SIDE COLUMN ===== */
+    .side-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .side-card {
+      background: radial-gradient(circle at top right, rgba(15,23,42,0.98), rgba(8,47,73,0.98));
+      border-radius: 20px;
+      padding: 12px 13px 13px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(59,130,246,0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .side-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(56,189,248,0.22), transparent 60%);
+      pointer-events: none;
+    }
+
+    .side-card-inner { position: relative; z-index: 1; }
+
+    .side-card h3 {
+      margin: 0 0 4px;
+      font-size: 14px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 6px;
+    }
+
+    .chip {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.98);
+      color: #e5e7eb;
+    }
+
+    .tips-list {
+      list-style: none;
+      padding-right: 16px;
+      margin: 0;
+      font-size: 11px;
+      color: #e5e7eb;
+    }
+
+    .tips-list li::before {
+      content: "• ";
+      color: var(--accent);
+    }
+
+    .tips-list li {
+      margin-bottom: 3px;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .mini-week {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 5px;
+      margin-top: 6px;
+      font-size: 10px;
+    }
+
+    .mini-day {
+      border-radius: 10px;
+      padding: 4px 6px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(31,41,55,0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .mini-day span.label {
+      font-weight: 600;
+      font-size: 10px;
+    }
+
+    .mini-day span.detail {
+      color: var(--text-muted);
+    }
+
+    /* ===== GRAPH CARD ===== */
+    .graph-card {
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(15,23,42,1));
+      border-radius: 18px;
+      padding: 10px 12px 12px;
+      border: 1px solid rgba(59,130,246,0.6);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .graph-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at bottom left, rgba(249,115,22,0.24), transparent 60%);
+      pointer-events: none;
+    }
+
+    .graph-inner { position: relative; z-index: 1; }
+
+    .graph-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .graph-header h3 {
+      margin: 0;
+      font-size: 13px;
+    }
+
+    .graph-select {
+      background: #020617;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      color: #e5e7eb;
+      font-size: 11px;
+      padding: 3px 8px;
+    }
+
+    .graph-note {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    canvas {
+      max-width: 100%;
+    }
+  </style>
 </head>
 <body>
-  <!-- תוכן מלא של האפליקציה (כרטיס ראשי, צד, טיפים, גרף וכו') -->
-  <!-- הקוד המלא נשמר בקובץ -->
+  <div class="app-shell">
+    <div class="top-bar">
+      <div class="brand">
+        <div class="brand-logo"><span>TP</span></div>
+        <div class="brand-text">
+          <h1><span>Training</span> Planner</h1>
+          <p>מערכת מסודרת למעקב משקלים, אימונים ופרוגרס שבועי</p>
+        </div>
+      </div>
+      <div class="top-summary">
+        <div class="pill-stat"><span class="icon">📅</span> 6 ימי אימון בשבוע</div>
+        <div class="pill-stat"><span class="icon">🏋️‍♂️</span> תרגילי בסיס + בידוד לכל שריר</div>
+        <div class="pill-stat"><span class="icon">💾</span> הכל נשמר אוטומטית במכשיר שלך</div>
+      </div>
+    </div>
+
+    <div class="day-strip">
+      <div class="day-buttons" id="dayButtons"></div>
+      <div class="week-label">
+        שבוע נוכחי: <span>מסה / הורדת אחוז שומן</span><br />
+        לחץ על יום כדי לעבור בין קבוצות השרירים.
+      </div>
+    </div>
+
+    <div class="layout-grid">
+      <!-- MAIN TABLE CARD -->
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-title-block">
+              <h2 id="dayTitle" class="card-title">יום ראשון – חזה + כתפיים + יד אחורית</h2>
+              <p id="daySubtitle" class="card-subtitle">חזה כבד + כתפיים + טרייספס – בניית מסה עליונה</p>
+            </div>
+            <div class="badge-live">
+              <span class="dot"></span>
+              אימון פעיל היום
+            </div>
+          </div>
+
+          <div class="meta-row">
+            <div class="meta-pill"><span class="icon">🏋️‍♂️</span>תרגילי בסיס + בידוד</div>
+            <div class="meta-pill"><span class="icon">⏱</span>מנוחות: 2–3 דק' בסיס, 60–90 שנ' בידוד</div>
+            <div class="meta-pill"><span class="icon">🎯</span>מטרה: עלייה הדרגתית בעומס</div>
+          </div>
+
+          <div class="controls-row">
+            <label for="workoutDate">תאריך אימון:</label>
+            <input type="date" id="workoutDate" />
+            <button class="btn-reset" id="resetDayBtn">🧹 איפוס כל הנתונים ליום הנוכחי</button>
+          </div>
+
+          <p class="info-text">
+            כל משקל / הערה שתכניס נשמרים אוטומטית לזיכרון המקומי של הדפדפן (localStorage) לפי יום ותרגיל.
+            אפשר לשתף את האתר עם חברים – לכל אחד נשמר המידע שלו.
+          </p>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>תרגיל</th>
+                  <th>סטים × חזרות</th>
+                  <th>קבוצת שריר</th>
+                  <th>משקל (ק״ג)</th>
+                  <th>הערות (סטים, קושי, RIR)</th>
+                </tr>
+              </thead>
+              <tbody id="exerciseTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDE COLUMN -->
+      <div class="side-column">
+        <!-- TIPS CARD -->
+        <div class="side-card">
+          <div class="side-card-inner">
+            <h3>טיפים חשובים לתוצאות מקסימליות</h3>
+            <div class="chip-row">
+              <div class="chip">Progressive Overload</div>
+              <div class="chip">טכניקה לפני משקל</div>
+              <div class="chip">שינה ותזונה</div>
+              <div class="chip">רישום מסודר</div>
+            </div>
+            <ul class="tips-list">
+              <li>להעלות עומס בהדרגה – כל 1–2 שבועות להוסיף מעט משקל, חזרות או סט.</li>
+              <li>בתרגילי בסיס: ירידה איטית, עלייה בשליטה – אם אתה "זורק", תוריד משקל.</li>
+              <li>להשאיר 1–3 חזרות ברזרבה (RIR) ברוב הסטים – לא להיכנס לכישלון בכל סט.</li>
+              <li>חלבון: בערך 1.6–2 גרם לכל ק״ג משקל גוף + שתייה של 2–3 ליטר מים ביום.</li>
+              <li>שינה של 7–9 שעות בלילה תעשה יותר בשביל השריר מאשר עוד סט או שניים.</li>
+              <li>אם יום אחד הרגשת חלש – זה בסדר. להסתכל על הממוצע החודשי, לא על יום בודד.</li>
+            </ul>
+            <p class="footer-note">
+              לוחץ על ימים שונים ורושם משקלים לאורך הזמן – כך תראה איך אתה מתחזק שבוע אחרי שבוע.
+            </p>
+          </div>
+        </div>
+
+        <!-- MINI WEEK CARD -->
+        <div class="side-card">
+          <div class="side-card-inner">
+            <h3>חלוקת שבוע – מה עובד בכל יום?</h3>
+            <div class="mini-week">
+              <div class="mini-day">
+                <span class="label">ראשון</span>
+                <span class="detail">חזה, כתפיים, יד אחורית</span>
+              </div>
+              <div class="mini-day">
+                <span class="label">שני</span>
+                <span class="detail">גב, יד קדמית, אמות</span>
+              </div>
+              <div class="mini-day">
+                <span class="label">שלישי</span>
+                <span class="detail">רגליים + בטן</span>
+              </div>
+              <div class="mini-day">
+                <span class="label">רביעי</span>
+                <span class="detail">חזה + כתפיים + טרייספס</span>
+              </div>
+              <div class="mini-day">
+                <span class="label">חמישי</span>
+                <span class="detail">גב + בייספס + אמות</span>
+              </div>
+              <div class="mini-day">
+                <span class="label">שישי</span>
+                <span class="detail">רגליים + ליבה</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GRAPH CARD -->
+        <div class="graph-card">
+          <div class="graph-inner">
+            <div class="graph-header">
+              <h3>מעקב פרוגרס – משקלים לאורך זמן</h3>
+              <select id="exerciseSelect" class="graph-select"></select>
+            </div>
+            <canvas id="progressChart" height="150"></canvas>
+            <p class="graph-note">
+              כל פעם שאתה מעדכן משקל לתרגיל + תאריך אימון, זה נשמר לגרף.
+              כך אפשר לראות איך המשקלים שלך עולים לאורך האימונים.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ===== DATA MODEL =====
+  const program = {
+    sunday: {
+      title: "יום ראשון – חזה + כתפיים + יד אחורית",
+      subtitle: "חזה כבד + כתף קדמית/אמצעית + טרייספס",
+      exercises: [
+        { name: "לחיצת חזה במוט (בנץ')", muscle: "חזה", sets: "4", reps: "6–8" },
+        { name: "לחיצת חזה בשיפוע עליון עם דאמבלים", muscle: "חזה עליון", sets: "4", reps: "8–10" },
+        { name: "פרפר במכונה לחזה", muscle: "חזה אמצעי", sets: "3", reps: "12–15" },
+        { name: "קרוס אובר מלמעלה למטה (פולי עליון)", muscle: "חזה תחתון", sets: "3", reps: "12–15" },
+        { name: "לחיצת כתפיים במכונה", muscle: "כתף קדמית", sets: "3", reps: "8–10" },
+        { name: "הרחקת כתפיים לצדדים עם דאמבלים", muscle: "כתף אמצעית", sets: "3", reps: "12–15" },
+        { name: "פשיטת מרפקים מעל הראש עם דאמבל", muscle: "יד אחורית – ראש ארוך", sets: "3", reps: "10–12" },
+        { name: "פשיטת מרפקים בחבל בפולי עליון", muscle: "יד אחורית – ראש צדדי", sets: "3", reps: "12–15" }
+      ]
+    },
+    monday: {
+      title: "יום שני – גב + יד קדמית + אמות",
+      subtitle: "גב מלא – רוחב, עובי, עליון ותחתון + בייספס",
+      exercises: [
+        { name: "מתח באחיזה רחבה", muscle: "גב רחב", sets: "4", reps: "6–8 / 8–10" },
+        { name: "חתירה למוט T", muscle: "גב אמצעי/עובי", sets: "4", reps: "8–10" },
+        { name: "חתירה בישיבה בפולי תחתון", muscle: "גב אמצעי", sets: "3", reps: "10–12" },
+        { name: "פרפר הפוך במכונה/פולי", muscle: "גב עליון + כתף אחורית", sets: "3", reps: "12–15" },
+        { name: "פשיטת גב בכיסא רומי", muscle: "גב תחתון", sets: "3", reps: "12–15" },
+        { name: "כפיפות מרפקים בעמידה", muscle: "יד קדמית", sets: "3", reps: "10–12" },
+        { name: "כפיפות פטישים עם דאמבלים", muscle: "יד קדמית (ברכיאליס)", sets: "3", reps: "12" },
+        { name: "כפיפת שורש כף היד הפוכה", muscle: "אמות", sets: "3", reps: "12–15" }
+      ]
+    },
+    tuesday: {
+      title: "יום שלישי – רגליים + ליבה",
+      subtitle: "רגליים מלאות – קוואדריספס, אחורי הירך, ישבן ותאומים",
+      exercises: [
+        { name: "האקט סקוואט במכונה", muscle: "קוואד + ישבן", sets: "4", reps: "8–10" },
+        { name: "לחיצת רגליים במכונה", muscle: "כל הרגל", sets: "4", reps: "10–12" },
+        { name: "פשיטת ברכיים במכונה", muscle: "קוואדריספס", sets: "3", reps: "12–15" },
+        { name: "כפיפת ברכיים בעמידה/מכונה", muscle: "אחורי הירך", sets: "3", reps: "12–15" },
+        { name: "דדליפט רומני (RDL)", muscle: "ישבן + מסטרינג", sets: "3", reps: "8–10" },
+        { name: "הרמת עקבים בלחיצת רגליים", muscle: "תאומים עליון", sets: "3", reps: "12–20" },
+        { name: "הרמת עקבים בישיבה במכונה", muscle: "תאומים תחתון", sets: "3", reps: "12–20" },
+        { name: "כפיפות בטן במכונה", muscle: "ליבה", sets: "3", reps: "15" }
+      ]
+    },
+    wednesday: {
+      title: "יום רביעי – חזה + כתף קדמית + כתף אמצעית + יד אחורית",
+      subtitle: "חזה איכותי + כתפיים חזקות + טרייספס",
+      exercises: [
+        { name: "לחיצת חזה בשיפוע חיובי עם דאמבלים", muscle: "חזה עליון", sets: "4", reps: "8–10" },
+        { name: "לחיצת חזה בעמידה עם כבלים", muscle: "חזה אמצעי/תחתון", sets: "3", reps: "10–12" },
+        { name: "פרפר עם כבלים בישיבה", muscle: "חזה אמצעי", sets: "3", reps: "12–15" },
+        { name: "לחיצת כתפיים עם דאמבלים", muscle: "כתף קדמית + אמצעית", sets: "3", reps: "8–10" },
+        { name: "הרחקת כתפיים לצדדים", muscle: "כתף אמצעית", sets: "3", reps: "12–15" },
+        { name: "פשיטת מרפקים מעל הראש עם דאמבל", muscle: "יד אחורית – ראש ארוך", sets: "3", reps: "10–12" },
+        { name: "פשיטת מרפקים בחבל בפולי עליון", muscle: "יד אחורית – ראש צדדי", sets: "3", reps: "12–15" }
+      ]
+    },
+    Thursday: {
+      title: "יום חמישי – גב + יד קדמית + אמות",
+      subtitle: "גב איכותי שני בשבוע + בייספס ואמות",
+      exercises: [
+        { name: "מתח באחיזה רחבה", muscle: "גב רחב", sets: "4", reps: "6–8 / 8–10" },
+        { name: "חתירה למוט T", muscle: "גב אמצעי/עובי", sets: "4", reps: "8–10" },
+        { name: "חתירה בישיבה בפולי תחתון", muscle: "גב אמצעי", sets: "3", reps: "10–12" },
+        { name: "פרפר הפוך", muscle: "גב עליון + כתף אחורית", sets: "3", reps: "12–15" },
+        { name: "פשיטת גב בכיסא רומי", muscle: "גב תחתון", sets: "3", reps: "12–15" },
+        { name: "כפיפות מרפקים בעמידה", muscle: "יד קדמית", sets: "3", reps: "10–12" },
+        { name: "כפיפות פטישים עם דאמבלים", muscle: "יד קדמית", sets: "3", reps: "12" },
+        { name: "כפיפת שורש כף היד הפוכה", muscle: "אמות", sets: "3", reps: "12–15" }
+      ]
+    },
+    friday: {
+      title: "יום שישי – רגליים + ליבה",
+      subtitle: "רגליים שני – דגש נוסף על ישבן/מסטרינג ותאומים",
+      exercises: [
+        { name: "האקט סקוואט במכונה", muscle: "קוואד + ישבן", sets: "4", reps: "8–10" },
+        { name: "לחיצת רגליים במכונה", muscle: "כל הרגל", sets: "4", reps: "10–12" },
+        { name: "פשיטת ברכיים במכונה", muscle: "קוואדריספס", sets: "3", reps: "12–15" },
+        { name: "כפיפת ברכיים בעמידה/מכונה", muscle: "אחורי הירך", sets: "3", reps: "12–15" },
+        { name: "דדליפט רומני (RDL)", muscle: "ישבן + מסטרינג", sets: "3", reps: "8–10" },
+        { name: "הרמת עקבים בלחיצת רגליים", muscle: "תאומים עליון", sets: "3", reps: "12–20" },
+        { name: "הרמת עקבים בישיבה במכונה", muscle: "תאומים תחתון", sets: "3", reps: "12–20" },
+        { name: "כפיפות בטן במכונה", muscle: "ליבה", sets: "3", reps: "15" }
+      ]
+    }
+  };
+
+  const dayOrder = [
+    { key: "sunday", label: "ראשון" },
+    { key: "monday", label: "שני" },
+    { key: "tuesday", label: "שלישי" },
+    { key: "wednesday", label: "רביעי" },
+    { key: "Thursday", label: "חמישי" },
+    { key: "friday", label: "שישי" }
+  ];
+
+  const dayButtonsContainer = document.getElementById("dayButtons");
+  const dayTitleEl = document.getElementById("dayTitle");
+  const daySubtitleEl = document.getElementById("daySubtitle");
+  const exerciseTableBody = document.getElementById("exerciseTableBody");
+  const dateInput = document.getElementById("workoutDate");
+  const resetDayBtn = document.getElementById("resetDayBtn");
+  const exerciseSelect = document.getElementById("exerciseSelect");
+
+  let currentDayKey = "sunday";
+  let chart;
+  let currentChartExerciseIndex = 0;
+
+  function storageKey(dayKey, index, field) {
+    return `training_${dayKey}_ex${index}_${field}`;
+  }
+
+  function dateStorageKey(dayKey) {
+    return `training_${dayKey}_date`;
+  }
+
+  function historyKey(dayKey, index) {
+    return `training_history_${dayKey}_ex${index}`;
+  }
+
+  function loadHistory(dayKey, index) {
+    try {
+      const raw = localStorage.getItem(historyKey(dayKey, index));
+      if (!raw) return [];
+      const arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return [];
+      return arr;
+    } catch {
+      return [];
+    }
+  }
+
+  function saveHistory(dayKey, index, history) {
+    localStorage.setItem(historyKey(dayKey, index), JSON.stringify(history));
+  }
+
+  function addHistoryEntry(dayKey, index, dateStr, weightStr) {
+    if (!dateStr || !weightStr) return;
+    const weight = parseFloat(weightStr);
+    if (isNaN(weight) || weight <= 0) return;
+    const history = loadHistory(dayKey, index);
+    const last = history[history.length - 1];
+    if (last && last.date === dateStr && parseFloat(last.weight) === weight) return;
+    history.push({ date: dateStr, weight });
+    if (history.length > 40) history.shift();
+    saveHistory(dayKey, index, history);
+    if (dayKey === currentDayKey && index === currentChartExerciseIndex) {
+      updateChart();
+    }
+  }
+
+  function renderDay(dayKey) {
+    currentDayKey = dayKey;
+    const dayData = program[dayKey];
+    if (!dayData) return;
+
+    dayTitleEl.textContent = dayData.title;
+    daySubtitleEl.textContent = dayData.subtitle || "";
+
+    Array.from(dayButtonsContainer.children).forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.dayKey === dayKey);
+    });
+
+    const savedDate = localStorage.getItem(dateStorageKey(dayKey));
+    dateInput.value = savedDate || "";
+
+    exerciseTableBody.innerHTML = "";
+
+    dayData.exercises.forEach((ex, index) => {
+      const tr = document.createElement("tr");
+
+      const tdName = document.createElement("td");
+      tdName.className = "name-col";
+      tdName.textContent = ex.name;
+      tr.appendChild(tdName);
+
+      const tdSetsReps = document.createElement("td");
+      tdSetsReps.textContent = ex.sets + " × " + ex.reps;
+      tr.appendChild(tdSetsReps);
+
+      const tdMuscle = document.createElement("td");
+      tdMuscle.className = "muscle-col";
+      const badge = document.createElement("span");
+      badge.className = "badge-muscle";
+      const dot = document.createElement("span");
+      dot.className = "dot";
+      const text = document.createTextNode(ex.muscle);
+      badge.appendChild(dot);
+      badge.appendChild(text);
+      tdMuscle.appendChild(badge);
+      tr.appendChild(tdMuscle);
+
+      const tdWeight = document.createElement("td");
+      const weightInput = document.createElement("input");
+      weightInput.type = "number";
+      weightInput.step = "0.5";
+      weightInput.placeholder = "משקל";
+      weightInput.value = localStorage.getItem(storageKey(dayKey, index, "weight")) || "";
+      weightInput.addEventListener("input", () => {
+        localStorage.setItem(storageKey(dayKey, index, "weight"), weightInput.value);
+        if (dateInput.value) {
+          addHistoryEntry(dayKey, index, dateInput.value, weightInput.value);
+        }
+      });
+      tdWeight.appendChild(weightInput);
+      tr.appendChild(tdWeight);
+
+      const tdNotes = document.createElement("td");
+      const notesInput = document.createElement("input");
+      notesInput.type = "text";
+      notesInput.placeholder = "הערה (סטים, קושי, RIR...)";
+      notesInput.value = localStorage.getItem(storageKey(dayKey, index, "notes")) || "";
+      notesInput.addEventListener("input", () => {
+        localStorage.setItem(storageKey(dayKey, index, "notes"), notesInput.value);
+      });
+      tdNotes.appendChild(notesInput);
+      tr.appendChild(tdNotes);
+
+      exerciseTableBody.appendChild(tr);
+    });
+
+    populateExerciseSelect();
+    updateChart();
+  }
+
+  function populateExerciseSelect() {
+    const dayData = program[currentDayKey];
+    exerciseSelect.innerHTML = "";
+    dayData.exercises.forEach((ex, index) => {
+      const opt = document.createElement("option");
+      opt.value = index;
+      opt.textContent = ex.name;
+      exerciseSelect.appendChild(opt);
+    });
+    currentChartExerciseIndex = 0;
+    exerciseSelect.value = "0";
+  }
+
+  function updateChart() {
+    const dayData = program[currentDayKey];
+    if (!dayData) return;
+    const ex = dayData.exercises[currentChartExerciseIndex];
+    const history = loadHistory(currentDayKey, currentChartExerciseIndex);
+
+    const labels = history.map((h, i) => h.date || `אימון ${i + 1}`);
+    const values = history.map(h => h.weight);
+
+    const ctx = document.getElementById("progressChart").getContext("2d");
+
+    if (chart) {
+      chart.destroy();
+    }
+
+    chart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: ex.name,
+          data: values,
+          tension: 0.3,
+          fill: true,
+          borderColor: "#f97316",
+          backgroundColor: "rgba(249,115,22,0.22)",
+          pointRadius: 3,
+          pointBackgroundColor: "#fed7aa"
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            labels: {
+              font: { size: 11 },
+              color: "#e5e7eb"
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: "#9ca3af", font: { size: 10 } },
+            grid: { color: "rgba(55,65,81,0.4)" }
+          },
+          y: {
+            ticks: { color: "#9ca3af", font: { size: 10 } },
+            grid: { color: "rgba(55,65,81,0.4)" }
+          }
+        }
+      }
+    });
+  }
+
+  // ===== INIT =====
+  dayOrder.forEach(d => {
+    const btn = document.createElement("button");
+    btn.className = "day-button" + (d.key === currentDayKey ? " active" : "");
+    btn.textContent = d.label;
+    const dot = document.createElement("span");
+    dot.className = "dot";
+    btn.prepend(dot);
+    btn.dataset.dayKey = d.key;
+    btn.addEventListener("click", () => renderDay(d.key));
+    dayButtonsContainer.appendChild(btn);
+  });
+
+  dateInput.addEventListener("change", () => {
+    localStorage.setItem(dateStorageKey(currentDayKey), dateInput.value);
+  });
+
+  resetDayBtn.addEventListener("click", () => {
+    if (!confirm("לאפס את כל המשקלים, ההערות וההיסטוריה ליום הזה?")) return;
+    const dayData = program[currentDayKey];
+    dayData.exercises.forEach((_, index) => {
+      localStorage.removeItem(storageKey(currentDayKey, index, "weight"));
+      localStorage.removeItem(storageKey(currentDayKey, index, "notes"));
+      localStorage.removeItem(historyKey(currentDayKey, index));
+    });
+    localStorage.removeItem(dateStorageKey(currentDayKey));
+    renderDay(currentDayKey);
+  });
+
+  exerciseSelect.addEventListener("change", () => {
+    currentChartExerciseIndex = parseInt(exerciseSelect.value, 10) || 0;
+    updateChart();
+  });
+
+  renderDay(currentDayKey);
+</script>
 </body>
 </html>
