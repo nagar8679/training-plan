@@ -75,52 +75,1191 @@
   </div>
 </div>
 
+    a { color: inherit; text-decoration: none; }
 
-<!-- 🔐 אזור התחברות -->
-<div id="auth-panel" style="padding:16px; background:#111827; color:#e5e7eb; border-bottom:1px solid #1f2937;">
-  <h2 style="margin:0 0 8px;">התחברות</h2>
+    .app-shell {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 10px 10px 32px;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 14px;
+    }
 
-  <!-- הודעות שגיאה/מצב -->
-  <div id="auth-message" style="color:#f97373; margin-bottom:8px; font-size:14px;"></div>
+    @media (max-width: 900px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+    }
 
-  <!-- אימייל + סיסמה -->
-  <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px;">
-    <input id="email-input" type="email" placeholder="אימייל"
-           style="padding:6px 8px; border-radius:4px; border:1px solid #374151; background:#020617; color:#e5e7eb;">
-    <input id="password-input" type="password" placeholder="סיסמה"
-           style="padding:6px 8px; border-radius:4px; border:1px solid #374151; background:#020617; color:#e5e7eb;">
-    <button id="login-email-btn"
-            style="padding:6px 10px; border-radius:4px; border:none; background:#22c55e; color:#020617; cursor:pointer;">
-      התחברות
-    </button>
-    <button id="register-email-btn"
-            style="padding:6px 10px; border-radius:4px; border:1px solid #22c55e; background:transparent; color:#bbf7d0; cursor:pointer;">
-      הרשמה
-    </button>
+    /* ===== SIDE NAV ===== */
+    .side-nav {
+      background: radial-gradient(circle at top left, #020617, #020617 50%, #020617);
+      border-radius: var(--radius-lg);
+      padding: 14px 12px;
+      border: 1px solid rgba(30,64,175,0.7);
+      box-shadow: var(--shadow-soft);
+      position: sticky;
+      top: 10px;
+      height: fit-content;
+    }
+
+    .side-nav-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: conic-gradient(from 210deg, #f97316, #facc15, #22c55e, #f97316);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 2px #020617, 0 0 20px rgba(249,115,22,0.7);
+      font-weight: 800;
+      color: #020617;
+      font-size: 16px;
+    }
+
+    .side-nav-title h1 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .side-nav-title h1 span {
+      color: var(--accent);
+    }
+
+    .side-nav-title p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .nav-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin: 8px 0 4px;
+    }
+
+    .nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 13px;
+    }
+
+    .nav-item {
+      border-radius: 999px;
+      padding: 6px 10px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      color: var(--text-main);
+      border: 1px solid transparent;
+      transition: 0.15s ease-out;
+    }
+
+    .nav-item span.icon {
+      font-size: 14px;
+    }
+
+    .nav-item.active {
+      background: radial-gradient(circle at top left, #f97316, #ea580c);
+      color: #020617;
+      border-color: rgba(15,23,42,0.95);
+      box-shadow: 0 0 0 1px rgba(15,23,42,0.9), 0 0 20px rgba(249,115,22,0.7);
+      font-weight: 600;
+    }
+
+    .nav-item:hover:not(.active) {
+      background: rgba(15,23,42,0.9);
+      border-color: rgba(30,64,175,0.8);
+    }
+
+    .nav-footer {
+      border-top: 1px solid #111827;
+      margin-top: 10px;
+      padding-top: 8px;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .top-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .top-title h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .top-title p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .top-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .pill-stat {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.8);
+      background: radial-gradient(circle at top, #020617, #020617 55%, #020617);
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: #e5e7eb;
+    }
+
+    .pill-stat span.icon {
+      font-size: 13px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #020617, #020617 60%, #020617);
+      border-radius: var(--radius-lg);
+      padding: 12px 12px 14px;
+      border: 1px solid rgba(30,64,175,0.75);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(248,113,113,0.14), transparent 60%);
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .badge-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(22,163,74,0.16);
+      border: 1px solid rgba(22,163,74,0.7);
+      color: #bbf7d0;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .badge-live span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.35);
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(55,65,81,0.85);
+      color: #cbd5f5;
+    }
+
+    .meta-pill span.icon {
+      font-size: 13px;
+    }
+
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 11px;
+    }
+
+    .controls-row label {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    input[type="date"] {
+      background: #020617;
+      border-radius: 10px;
+      border: 1px solid #1e293b;
+      color: #e5e7eb;
+      padding: 4px 8px;
+      font-size: 11px;
+      min-width: 140px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 5px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .btn-main {
+      background: var(--accent);
+      color: #020617;
+      box-shadow: 0 0 0 1px rgba(15,23,42,0.9), 0 0 18px rgba(249,115,22,0.7);
+    }
+
+    .btn-main:hover {
+      background: #ea580c;
+    }
+
+    .btn-ghost {
+      background: rgba(15,23,42,0.96);
+      color: var(--text-main);
+      border: 1px solid rgba(55,65,81,0.9);
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(96,165,250,0.9);
+    }
+
+    .btn-danger {
+      background: rgba(220,38,38,0.96);
+      color: #fee2e2;
+      box-shadow: 0 0 0 1px rgba(127,29,29,0.9);
+    }
+
+    .btn-danger:hover {
+      background: #b91c1c;
+    }
+
+    .day-strip {
+      margin: 8px 0 10px;
+      padding: 6px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(15,23,42,0.98));
+      border: 1px solid rgba(30,64,175,0.6);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .day-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .day-button {
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 5px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.15s ease-out;
+    }
+
+    .day-button span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #475569;
+    }
+
+    .day-button.active {
+      background: var(--accent);
+      color: #020617;
+      border-color: rgba(15,23,42,0.9);
+      box-shadow: 0 0 0 1px rgba(15,23,42,0.9), 0 0 16px rgba(249,115,22,0.7);
+    }
+
+    .day-button.active span.dot {
+      background: #020617;
+    }
+
+    .week-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .week-label span {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .info-text {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(260px, 1.3fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* TABLE */
+    .table-wrapper {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #111827;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.98), rgba(15,23,42,0.98));
+      margin-bottom: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    thead {
+      background: #020617;
+    }
+
+    th, td {
+      padding: 6px 6px;
+      border-bottom: 1px solid rgba(31,41,55,0.9);
+      text-align: center;
+    }
+
+    th {
+      font-weight: 600;
+      color: #cbd5f5;
+      letter-spacing: 0.02em;
+      background: linear-gradient(90deg, rgba(15,23,42,0.98), rgba(15,23,42,0.92));
+    }
+
+    tbody tr:nth-child(even) td { background: rgba(15,23,42,0.96); }
+    tbody tr:nth-child(odd) td { background: rgba(15,23,42,0.98); }
+
+    tbody tr:hover td {
+      background: rgba(30,64,175,0.42);
+    }
+
+    td.name-col {
+      text-align: right;
+      font-weight: 500;
+      font-size: 11px;
+      color: #e5e7eb;
+    }
+
+    td.muscle-col {
+      color: #c4b5fd;
+      white-space: nowrap;
+    }
+
+    .badge-muscle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(30,64,175,0.22);
+      border: 1px solid rgba(59,130,246,0.6);
+      font-size: 10px;
+    }
+
+    .badge-muscle span.dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(59,130,246,0.9);
+    }
+
+    .sets-dots {
+      display: inline-flex;
+      gap: 3px;
+      justify-content: center;
+    }
+
+    .set-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      border: 1px solid #9ca3af;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .set-dot.active {
+      background: var(--accent-3);
+      border-color: #bbf7d0;
+      box-shadow: 0 0 0 1px rgba(34,197,94,0.7);
+    }
+
+    input[type="number"], input[type="text"] {
+      width: 100%;
+      max-width: 120px;
+      background: #020617;
+      border-radius: 8px;
+      border: 1px solid #1f2937;
+      color: var(--text-main);
+      font-size: 11px;
+      padding: 3px 6px;
+    }
+
+    input[type="number"]::placeholder,
+    input[type="text"]::placeholder {
+      color: #6b7280;
+    }
+
+    input[type="number"]:focus,
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(249,115,22,0.45);
+    }
+
+    /* SIDE CARDS */
+    .side-column {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .side-card {
+      background: radial-gradient(circle at top right, #020617, #020617 55%, #020617);
+      border-radius: var(--radius-lg);
+      padding: 10px 10px 11px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(59,130,246,0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .side-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(56,189,248,0.2), transparent 60%);
+      pointer-events: none;
+    }
+
+    .side-card-inner { position: relative; z-index: 1; }
+
+    .side-card h3 {
+      margin: 0 0 4px;
+      font-size: 13px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 5px;
+    }
+
+    .chip {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.98);
+      color: #e5e7eb;
+    }
+
+    .tips-list {
+      list-style: none;
+      padding-right: 16px;
+      margin: 0;
+      font-size: 11px;
+      color: #e5e7eb;
+    }
+
+    .tips-list li::before {
+      content: "• ";
+      color: var(--accent);
+    }
+
+    .tips-list li {
+      margin-bottom: 3px;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .history-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 11px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      border-radius: 8px;
+      padding: 4px 6px;
+      border: 1px solid #111827;
+      background: rgba(15,23,42,0.92);
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .history-item span.label {
+      color: #e5e7eb;
+    }
+
+    .history-item span.meta {
+      color: var(--text-muted);
+    }
+
+    /* WORKOUT MODE */
+    .workout-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(260px, 1.3fr);
+      gap: 10px;
+    }
+    @media (max-width: 900px) {
+      .workout-layout { grid-template-columns: 1fr; }
+    }
+
+    .workout-main-title {
+      font-size: 14px;
+      margin: 0 0 6px;
+    }
+
+    .workout-ex-name {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 4px;
+    }
+
+    .workout-ex-muscle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .workout-sets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .workout-sets span.tag {
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.9);
+      background: rgba(15,23,42,0.96);
+    }
+
+    .workout-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+
+    .timer-display {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--accent-2);
+    }
+
+    .workout-steps {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .workout-list {
+      font-size: 11px;
+      max-height: 220px;
+      overflow-y: auto;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .workout-list-item {
+      padding: 4px 6px;
+      border-radius: 8px;
+      border: 1px solid #111827;
+      background: rgba(15,23,42,0.95);
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .workout-list-item.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(249,115,22,0.55);
+    }
+
+    /* EXERCISE LIBRARY */
+    .exercise-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .exercise-card {
+      border-radius: 12px;
+      padding: 8px;
+      border: 1px solid #111827;
+      background: radial-gradient(circle at top, #020617, #020617 65%, #020617);
+    }
+
+    .exercise-card h4 {
+      margin: 0 0 2px;
+      font-size: 13px;
+    }
+
+    .exercise-card .muscle {
+      font-size: 11px;
+      color: var(--accent-2);
+      margin-bottom: 4px;
+    }
+
+    .exercise-card p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* HISTORY PAGE */
+    .history-group {
+      margin-bottom: 6px;
+      border-radius: 10px;
+      border: 1px solid #111827;
+      background: rgba(15,23,42,0.96);
+      padding: 6px 8px;
+      font-size: 11px;
+    }
+
+    .history-group-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #e5e7eb;
+    }
+
+    .history-group-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .history-group-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 2px;
+      color: var(--text-muted);
+    }
+
+    /* PR PAGE */
+    .pr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .pr-card {
+      border-radius: 12px;
+      padding: 8px;
+      border: 1px solid #111827;
+      background: radial-gradient(circle at top, #020617, #020617 60%, #020617);
+    }
+
+    .pr-card h4 {
+      margin: 0 0 2px;
+      font-size: 13px;
+    }
+
+    .pr-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-3);
+    }
+
+    .pr-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* SETTINGS */
+    .settings-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .settings-row label {
+      font-weight: 500;
+    }
+
+    select {
+      background: #020617;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      color: #e5e7eb;
+      font-size: 12px;
+      padding: 4px 8px;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 1px rgba(56,189,248,0.6);
+    }
+
+    .small-note {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* EXPORT BUTTONS */
+    .export-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+      font-size: 11px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- SIDE NAV -->
+    <aside class="side-nav">
+      <div class="side-nav-header">
+        <div class="brand-logo">TP</div>
+        <div class="side-nav-title">
+          <h1><span>Training</span> Planner</h1>
+          <p>מערכת מלאה למעקב אימוני כוח</p>
+        </div>
+      </div>
+
+      <div class="nav-section-title">ניווט</div>
+      <ul class="nav-list">
+        <li class="nav-item active" data-page="dashboard">
+          <span class="icon">📊</span> דשבורד יומי
+        </li>
+        <li class="nav-item" data-page="workout">
+          <span class="icon">🏋️‍♂️</span> מצב אימון
+        </li>
+        <li class="nav-item" data-page="library">
+          <span class="icon">📘</span> ספריית תרגילים
+        </li>
+        <li class="nav-item" data-page="history">
+          <span class="icon">📅</span> יומן אימונים
+        </li>
+        <li class="nav-item" data-page="prs">
+          <span class="icon">🏅</span> שיאים אישיים
+        </li>
+        <li class="nav-item" data-page="settings">
+          <span class="icon">⚙️</span> הגדרות
+        </li>
+      </ul>
+
+      <div class="nav-footer">
+        כל הנתונים נשמרים כרגע בדפדפן שלך (localStorage).  
+        בשלב הבא אפשר לחבר לשמירה בענן (Firebase) כדי לעבוד מכל מכשיר.
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <div class="top-bar">
+        <div class="top-title">
+          <h2 id="mainPageTitle">דשבורד אימונים שבועי</h2>
+          <p id="mainPageSubtitle">מעקב משקלים, סטים והתקדמות לאורך זמן.</p>
+        </div>
+        <div class="top-pills">
+          <div class="pill-stat"><span class="icon">📆</span>6 ימי אימון בשבוע</div>
+          <div class="pill-stat"><span class="icon">📈</span>מטרה: עלייה הדרגתית בעומס</div>
+          <div class="pill-stat"><span class="icon">💾</span>נשמר אוטומטית במכשיר שלך</div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD PAGE -->
+      <section id="dashboard" class="page active">
+        <div class="day-strip">
+          <div class="day-buttons" id="dayButtons"></div>
+          <div class="week-label">
+            שבוע נוכחי: <span>מסה / הורדת אחוז שומן</span><br />
+            בחר יום, רשום משקלים – המערכת תבנה עבורך היסטוריה וגרף.
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <section class="card">
+            <div class="card-inner">
+              <div class="card-header">
+                <div>
+                  <h3 id="dayTitle" style="margin:0;font-size:15px;">יום ראשון – חזה + כתפיים + יד אחורית</h3>
+                  <p id="daySubtitle" style="margin:2px 0 0;font-size:11px;color:#fb923c;">
+                    חזה כבד + כתף קדמית/אמצעית + טרייספס
+                  </p>
+                </div>
+                <div class="badge-live">
+                  <span class="dot"></span> אימון פעיל – דשבורד
+                </div>
+              </div>
+
+              <div class="meta-row">
+                <div class="meta-pill"><span class="icon">🏋️‍♂️</span>תרגילי בסיס + בידוד</div>
+                <div class="meta-pill"><span class="icon">⏱</span>מנוחות: 2–3 דק' בסיס / 60–90 שנ' בידוד</div>
+                <div class="meta-pill"><span class="icon">🎯</span>שמור משקלים אחרי כל אימון</div>
+              </div>
+
+              <div class="controls-row">
+                <label for="workoutDate">תאריך אימון:</label>
+                <input type="date" id="workoutDate" />
+                <button class="btn btn-danger" id="resetDayBtn">🧹 איפוס נתוני היום</button>
+                <button class="btn btn-main" id="goWorkoutModeBtn">🏋️‍♂️ מעבר למצב אימון</button>
+              </div>
+
+              <p class="info-text">
+                כל משקל/הערה שאתה מזין נשמרים אוטומטית לפי יום ותאריך.  
+                ההיסטוריה משמשת לגרף, יומן אימונים ושיאים אישיים (PRs).
+              </p>
+
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>תרגיל</th>
+                      <th>סטים × חזרות</th>
+                      <th>קבוצת שריר</th>
+                      <th>סטים שבוצעו</th>
+                      <th>משקל (ק״ג)</th>
+                      <th>הערות</th>
+                    </tr>
+                  </thead>
+                  <tbody id="exerciseTableBody"></tbody>
+                </table>
+              </div>
+
+              <h4 style="margin:6px 0 4px;font-size:12px;">יומן אימונים ליום הנוכחי</h4>
+              <ul class="history-list" id="dayHistoryList"></ul>
+            </div>
+          </section>
+
+          <aside class="side-column">
+            <section class="side-card">
+              <div class="side-card-inner">
+                <h3>טיפים חשובים להתקדמות</h3>
+                <div class="chip-row">
+                  <div class="chip">Progressive Overload</div>
+                  <div class="chip">טכניקה לפני משקל</div>
+                  <div class="chip">שינה ותזונה</div>
+                </div>
+                <ul class="tips-list">
+                  <li>מטרה: לעלות בעומס (משקל/חזרות/סטים) כל 1–2 שבועות בצורה חכמה.</li>
+                  <li>בתרגילי בסיס – שליטה, לא לזרוק משקל. אם הטכניקה נשברת, להוריד משקל.</li>
+                  <li>להשאיר 1–3 חזרות ברזרבה ברוב הסטים – לא חייבים כישלון בכל סט.</li>
+                  <li>חלבון 1.6–2 גרם לכל ק״ג משקל גוף + 2–3 ליטר מים ביום.</li>
+                  <li>שינה טובה תיתן יותר תוצאות מעוד סט אחד בסוף אימון שאתה גמור בו.</li>
+                </ul>
+                <p class="footer-note">
+                  עקביות + מעקב מסודר = התקדמות.  
+                  האתר רק עוזר לך להיות מסודר – העבודה בחדר הכושר 💪
+                </p>
+              </div>
+            </section>
+
+            <section class="side-card">
+              <div class="side-card-inner">
+                <h3>גרף התקדמות – לפי תרגיל</h3>
+                <div class="controls-row" style="margin-bottom:4px;">
+                  <label for="exerciseSelect">בחר תרגיל לגרף:</label>
+                  <select id="exerciseSelect"></select>
+                </div>
+                <canvas id="progressChart" height="150"></canvas>
+                <p class="small-note">
+                  הגרף מציג משקלים לאורך זמן עבור התרגיל שנבחר – לפי תאריך האימון.
+                </p>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <!-- WORKOUT MODE PAGE -->
+      <section id="workout" class="page">
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <h3 class="workout-main-title">מצב אימון – ביצוע סטים בזמן אמת</h3>
+                <p style="margin:0;font-size:11px;color:#fb923c;">
+                  בחר יום, התחל אימון, סמן סטים, השתמש בטיימר מנוחה והמערכת תשמור לך הכל.
+                </p>
+              </div>
+              <div class="badge-live">
+                <span class="dot"></span> מצב אימון פעיל
+              </div>
+            </div>
+
+            <div class="workout-layout">
+              <div>
+                <div class="controls-row">
+                  <label>יום:</label>
+                  <select id="workoutDaySelect"></select>
+
+                  <label>תאריך:</label>
+                  <input type="date" id="workoutModeDate" />
+                </div>
+
+                <hr style="border:none;border-top:1px solid #111827;margin:6px 0;" />
+
+                <div id="workoutCurrentContainer">
+                  <p class="workout-ex-name" id="workoutExName">לא נבחר תרגיל עדיין</p>
+                  <p class="workout-ex-muscle" id="workoutExMuscle"></p>
+                  <div class="workout-sets">
+                    <span class="tag" id="workoutSetsRepsTag">סטים × חזרות</span>
+                    <span class="tag" id="workoutIndexTag">תרגיל 1 מתוך X</span>
+                  </div>
+
+                  <div class="workout-controls">
+                    <label>סט נוכחי:</label>
+                    <span id="currentSetLabel">1</span>
+                    <button class="btn btn-main" id="finishSetBtn">✔ סיימתי סט</button>
+                    <button class="btn btn-ghost" id="nextExerciseBtn">⏭ תרגיל הבא</button>
+                  </div>
+
+                  <div class="workout-controls">
+                    <label>משקל נוכחי (ק״ג):</label>
+                    <input type="number" id="workoutWeightInput" step="0.5" style="max-width:90px;" />
+                    <button class="btn btn-ghost" id="saveWorkoutWeightBtn">💾 שמור משקל</button>
+                  </div>
+
+                  <div class="workout-controls">
+                    <label>טיימר מנוחה (שניות):</label>
+                    <select id="restSelect">
+                      <option value="60">60</option>
+                      <option value="90" selected>90</option>
+                      <option value="120">120</option>
+                    </select>
+                    <button class="btn btn-main" id="startRestBtn">⏱ התחל מנוחה</button>
+                    <span class="timer-display" id="restTimerDisplay">00:00</span>
+                  </div>
+
+                  <p class="workout-steps">
+                    1. בחר יום ותאריך.  
+                    2. בחר תרגיל מהצד או לחץ “תרגיל הבא”.  
+                    3. עדכן משקל, לחץ “סיימתי סט”, והשתמש בטיימר מנוחה.  
+                    4. הכל נשמר לטבלה, להיסטוריה ולשיאים.
+                  </p>
+                </div>
+              </div>
+
+              <aside class="side-card">
+                <div class="side-card-inner">
+                  <h3>רשימת התרגילים ליום הנוכחי</h3>
+                  <ul class="workout-list" id="workoutExerciseList"></ul>
+                  <p class="small-note">
+                    לחץ על תרגיל ברשימה כדי לעבור אליו.  
+                    שדות המשקל והסטים מסונכרנים עם הדשבורד הראשי.
+                  </p>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- EXERCISE LIBRARY PAGE -->
+      <section id="library" class="page">
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <h3 style="margin:0;font-size:15px;">ספריית תרגילים</h3>
+                <p style="margin:2px 0 0;font-size:11px;color:#fb923c;">
+                  כל התרגילים מהתוכנית שלך – עם קבוצת שריר והסבר קצר לביצוע.
+                </p>
+              </div>
+            </div>
+
+            <div class="exercise-grid" id="exerciseLibraryGrid"></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- HISTORY PAGE -->
+      <section id="history" class="page">
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <h3 style="margin:0;font-size:15px;">יומן אימונים מלא</h3>
+                <p style="margin:2px 0 0;font-size:11px;color:#fb923c;">
+                  כל האימונים שלך לפי תאריך, יום ותרגיל – נבנה אוטומטית מהנתונים.
+                </p>
+              </div>
+            </div>
+
+            <div class="export-row">
+              <button class="btn btn-main" id="exportCsvBtn">📊 ייצוא לאקסל (CSV)</button>
+              <span class="small-note">
+                הקובץ יכיל: יום, תאריך, תרגיל, משקל ושעה שנשמר.
+              </span>
+            </div>
+
+            <div id="historyContainer"></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- PRS PAGE -->
+      <section id="prs" class="page">
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <h3 style="margin:0;font-size:15px;">שיאים אישיים (PRs)</h3>
+                <p style="margin:2px 0 0;font-size:11px;color:#fb923c;">
+                  לכל תרגיל – המשקל הכי גבוה שעשית אי פעם + תאריך השיא.
+                </p>
+              </div>
+            </div>
+
+            <div class="pr-grid" id="prGrid"></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- SETTINGS PAGE -->
+      <section id="settings" class="page">
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <h3 style="margin:0;font-size:15px;">הגדרות</h3>
+                <p style="margin:2px 0 0;font-size:11px;color:#fb923c;">
+                  שליטה על זמני מנוחה, עיצוב בסיסי ואיפוס נתונים.
+                </p>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <label for="defaultRestSelect">זמן מנוחה ברירת מחדל (מצב אימון):</label>
+              <select id="defaultRestSelect">
+                <option value="60">60 שניות</option>
+                <option value="90">90 שניות</option>
+                <option value="120">120 שניות</option>
+              </select>
+            </div>
+            <p class="small-note">
+              ההגדרה הזו תשפיע על הטיימר במצב אימון. ניתן לשנות גם משם ידנית.
+            </p>
+
+            <hr style="border:none;border-top:1px solid #111827;margin:10px 0;">
+
+            <div class="settings-row">
+              <button class="btn btn-danger" id="resetAllDataBtn">🧨 איפוס כל הנתונים (כל הימים והתאריכים)</button>
+            </div>
+            <p class="small-note">
+              פעולה זו תמחק את כל המשקלים, ההערות, ההיסטוריה והשיאים (PRs) מהמכשיר הזה בלבד.  
+              (בעתיד כשנחבר לענן – נוכל לעשות איפוס ענן נפרד.)
+            </p>
+          </div>
+        </section>
+      </section>
+    </main>
   </div>
-
-  <!-- גוגל / אנונימי -->
-  <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
-    <button id="google-btn"
-            style="padding:6px 10px; border-radius:4px; border:none; background:#f97316; color:#020617; cursor:pointer;">
-      התחבר עם Google
-    </button>
-    <button id="guest-btn"
-            style="padding:6px 10px; border-radius:4px; border:1px solid #6b7280; background:transparent; color:#e5e7eb; cursor:pointer;">
-      המשך כאורח
-    </button>
-  </div>
-
-  <!-- מצב משתמש -->
-  <div style="display:flex; justify-content:space-between; align-items:center; font-size:14px;">
-    <span id="user-info">לא מחובר</span>
-    <button id="logout-btn"
-            style="padding:4px 8px; border-radius:4px; border:none; background:#ef4444; color:#fee2e2; cursor:pointer; display:none;">
-      התנתק
-    </button>
-  </div>
-</div>
-
 
 <script>
   // ===== DATA MODEL =====
@@ -1214,6 +2353,3 @@
 </script>
 </body>
 </html>
-
-
-
