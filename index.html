@@ -53,6 +53,29 @@
     </button>
   </div>
 
+  <!-- גוגל / אנונימי -->
+  <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+    <button id="google-btn"
+            style="padding:6px 10px; border-radius:4px; border:none; background:#f97316; color:#020617; cursor:pointer;">
+      התחבר עם Google
+    </button>
+    <button id="guest-btn"
+            style="padding:6px 10px; border-radius:4px; border:1px solid #6b7280; background:transparent; color:#e5e7eb; cursor:pointer;">
+      המשך כאורח
+    </button>
+  </div>
+
+  <!-- מצב משתמש -->
+  <div style="display:flex; justify-content:space-between; align-items:center; font-size:14px;">
+    <span id="user-info">לא מחובר</span>
+    <button id="logout-btn"
+            style="padding:4px 8px; border-radius:4px; border:none; background:#ef4444; color:#fee2e2; cursor:pointer; display:none;">
+      התנתק
+    </button>
+  </div>
+</div>
+
+
 <!-- 🔐 אזור התחברות -->
 <div id="auth-panel" style="padding:16px; background:#111827; color:#e5e7eb; border-bottom:1px solid #1f2937;">
   <h2 style="margin:0 0 8px;">התחברות</h2>
@@ -1191,5 +1214,6 @@
 </script>
 </body>
 </html>
+
 
 
