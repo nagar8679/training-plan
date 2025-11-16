@@ -2396,8 +2396,69 @@ doLogin.addEventListener("click", () => {
 });
 
 </script>
+<!-- Login Modal -->
+<div id="loginModal" class="login-modal hidden">
+  <div class="login-box">
+    <h2>התחברות</h2>
 
+    <input id="emailInput" type="text" placeholder="אימייל">
+    <input id="passwordInput" type="password" placeholder="סיסמה">
+
+    <button id="doLogin">התחבר</button>
+    <button id="closeLogin">סגור</button>
+  </div>
+</div>
+
+<style>
+  .login-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  .login-box {
+    background: #111;
+    color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+  }
+  .hidden { display: none; }
+renderPRs();
+// --- Login Modal Control ---
+const loginBtn = document.getElementById("loginBtn");
+const loginModal = document.getElementById("loginModal");
+const closeLogin = document.getElementById("closeLogin");
+const doLogin = document.getElementById("doLogin");
+
+if (loginBtn && loginModal && closeLogin && doLogin) {
+    // פתיחת חלון התחברות
+    loginBtn.addEventListener("click", () => {
+        loginModal.classList.remove("hidden");
+    });
+
+    // סגירת חלון
+    closeLogin.addEventListener("click", () => {
+        loginModal.classList.add("hidden");
+    });
+
+    // התחברות זמנית (רק הודעה, בלי ענן)
+    doLogin.addEventListener("click", () => {
+        alert("🤝 התחברת בהצלחה! (כרגע התחברות מדומה, בלי ענן)");
+        loginModal.classList.add("hidden");
+    });
+}
+
+</script>
 </body>
 </html>
+
 
 
