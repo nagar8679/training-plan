@@ -2351,5 +2351,29 @@
   renderHistoryPage();
   renderPRs();
 </script>
+  <!-- Firebase CDN SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<script>
+  // הדבק כאן את ה-firebaseConfig שלך מ-Firebase
+  const firebaseConfig = {
+    apiKey: "PASTE_API_KEY_HERE",
+    authDomain: "PASTE_AUTH_DOMAIN_HERE",
+    projectId: "PASTE_PROJECT_ID_HERE",
+    storageBucket: "PASTE_STORAGE_BUCKET_HERE",
+    messagingSenderId: "PASTE_MESSAGING_SENDER_ID_HERE",
+    appId: "PASTE_APP_ID_HERE"
+  };
+
+  // את השורות למעלה אתה מחליף ב- firebaseConfig שהעתקת מהקונסול –
+  // הכי פשוט: פשוט תדביק את ה-object המקורי במקום כל ה-const הזה.
+
+  // אתחול Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+</script>
+
 </body>
 </html>
+
