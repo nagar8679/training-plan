@@ -949,7 +949,10 @@
         </li>
         <li class="nav-item" data-page="settings">
           <span class="icon">⚙️</span> הגדרות
-        </li>
+        </li><button id="loginBtn" class="menu-btn">
+    🔐 התחברות
+</button>
+
       </ul>
 
       <div class="nav-footer">
@@ -2372,8 +2375,29 @@
   // אתחול Firebase
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
+  // --- Login Modal Control ---
+const loginBtn = document.getElementById("loginBtn");
+const loginModal = document.getElementById("loginModal");
+const closeLogin = document.getElementById("closeLogin");
+const doLogin = document.getElementById("doLogin");
+
+loginBtn.addEventListener("click", () => {
+    loginModal.classList.remove("hidden");
+});
+
+closeLogin.addEventListener("click", () => {
+    loginModal.classList.add("hidden");
+});
+
+// פעולה זמנית — רק מציגה הודעה
+doLogin.addEventListener("click", () => {
+    alert("🤝 התחברת בהצלחה! (לא אמיתי עדיין)");
+    loginModal.classList.add("hidden");
+});
+
 </script>
 
 </body>
 </html>
+
 
