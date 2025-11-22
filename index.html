@@ -1,0 +1,3521 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>אפליקציית אימונים – דשבורד מלא</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg-main: #020617;
+      --bg-card: #020617;
+      --bg-card-soft: #0b1220;
+      --accent: #f97316;
+      --accent-2: #38bdf8;
+      --accent-3: #22c55e;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-subtle: #1e293b;
+      --shadow-soft: 0 20px 50px rgba(0,0,0,0.75);
+      --radius-lg: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #020617 0, #020617 40%, #000 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .app-shell {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 10px 10px 32px;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== SIDE NAV ===== */
+    .side-nav {
+      background: radial-gradient(circle at top left, #020617, #020617 50%, #020617);
+      border-radius: var(--radius-lg);
+      padding: 14px 12px;
+      border: 1px solid rgba(30,64,175,0.7);
+      box-shadow: var(--shadow-soft);
+      position: sticky;
+      top: 10px;
+      height: fit-content;
+    }
+
+    .side-nav-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: conic-gradient(from 210deg, #f97316, #facc15, #22c55e, #f97316);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 2px #020617, 0 0 20px rgba(249,115,22,0.7);
+      font-weight: 800;
+      color: #020617;
+      font-size: 16px;
+    }
+
+    .side-nav-title h1 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .side-nav-title h1 span {
+      color: var(--accent);
+    }
+
+    .side-nav-title p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .nav-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin: 8px 0 4px;
+    }
+
+    .nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 13px;
+    }
+
+    .nav-item {
+      border-radius: 999px;
+      padding: 6px 10px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      color: var(--text-main);
+      border: 1px solid transparent;
+      transition: 0.15s ease-out;
+    }
+
+    .nav-item span.icon {
+      font-size: 14px;
+    }
+
+    .nav-item.active {
+      background: radial-gradient(circle at top left, #f97316, #ea580c);
+      color: #020617;
+      border-color: rgba(15,23,42,0.95);
+      box-shadow: 0 0 0 1px rgba(15,23,42,0.9), 0 0 20px rgba(249,115,22,0.7);
+      font-weight: 600;
+    }
+
+    .nav-item:hover:not(.active) {
+      background: rgba(15,23,42,0.9);
+      border-color: rgba(30,64,175,0.8);
+    }
+
+    .nav-footer {
+      border-top: 1px solid #111827;
+      margin-top: 10px;
+      padding-top: 8px;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .top-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .top-title h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .top-title p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .top-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .pill-stat {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.8);
+      background: radial-gradient(circle at top, #020617, #020617 55%, #020617);
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: #e5e7eb;
+    }
+
+    .pill-stat span.icon {
+      font-size: 13px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #020617, #020617 60%, #020617);
+      border-radius: var(--radius-lg);
+      padding: 12px 12px 14px;
+      border: 1px solid rgba(30,64,175,0.75);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(248,113,113,0.14), transparent 60%);
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .badge-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(22,163,74,0.16);
+      border: 1px solid rgba(22,163,74,0.7);
+      color: #bbf7d0;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .badge-live span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.35);
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(55,65,81,0.85);
+      color: #cbd5f5;
+    }
+
+    .meta-pill span.icon {
+      font-size: 13px;
+    }
+
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 11px;
+    }
+
+    .controls-row label {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    input[type="date"] {
+      background: #020617;
+      border-radius: 10px;
+      border: 1px solid #1e293b;
+      color: #e5e7eb;
+      padding: 4px 8px;
+      font-size: 11px;
+      min-width: 140px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 5px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .btn-main {
+      background: var(--accent);
+      color: #020617;
+      box-shadow: 0 0 0 1px rgba(15,23,42,0.9), 0 0 18px rgba(249,115,22,0.7);
+    }
+
+    .btn-main:hover {
+      background: #ea580c;
+    }
+
+    .btn-ghost {
+      background: rgba(15,23,42,0.96);
+      color: var(--text-main);
+      border: 1px solid rgba(55,65,81,0.9);
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(96,165,250,0.9);
+    }
+
+    .btn-danger {
+      background: rgba(220,38,38,0.96);
+      color: #fee2e2;
+      box-shadow: 0 0 0 1px rgba(127,29,29,0.9);
+    }
+
+    .btn-danger:hover {
+      background: #b91c1c;
+    }
+
+    .day-strip {
+      margin: 8px 0 10px;
+      padding: 6px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(15,23,42,0.98));
+      border: 1px solid rgba(30,64,175,0.6);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .day-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .day-button {
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 5px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.15s ease-out;
+    }
+
+    .day-button span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #475569;
+    }
+
+    .day-button.active {
+      background: var(--accent);
+      color: #020617;
+      border-color: rgba(15,23,42,0.9);
+      box-shadow: 0 0 0 1px rgba(15,23,42,0.9), 0 0 16px rgba(249,115,22,0.7);
+    }
+
+    .day-button.active span.dot {
+      background: #020617;
+    }
+
+    .week-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .week-label span {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .info-text {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(260px, 1.3fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* TABLE */
+    .table-wrapper {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #111827;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.98), rgba(15,23,42,0.98));
+      margin-bottom: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    thead {
+      background: #020617;
+    }
+
+    th, td {
+      padding: 6px 6px;
+      border-bottom: 1px solid rgba(31,41,55,0.9);
+      text-align: center;
+    }
+
+    th {
+      font-weight: 600;
+      color: #cbd5f5;
+      letter-spacing: 0.02em;
+      background: linear-gradient(90deg, rgba(15,23,42,0.98), rgba(15,23,42,0.92));
+    }
+
+    tbody tr:nth-child(even) td { background: rgba(15,23,42,0.96); }
+    tbody tr:nth-child(odd) td { background: rgba(15,23,42,0.98); }
+
+    tbody tr:hover td {
+      background: rgba(30,64,175,0.42);
+    }
+
+    td.name-col {
+      text-align: right;
+      font-weight: 500;
+      font-size: 11px;
+      color: #e5e7eb;
+    }
+
+    td.muscle-col {
+      color: #c4b5fd;
+      white-space: nowrap;
+    }
+
+    .badge-muscle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(30,64,175,0.22);
+      border: 1px solid rgba(59,130,246,0.6);
+      font-size: 10px;
+    }
+
+    .badge-muscle span.dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(59,130,246,0.9);
+    }
+
+    .sets-dots {
+      display: inline-flex;
+      gap: 3px;
+      justify-content: center;
+    }
+
+    .set-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      border: 1px solid #9ca3af;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .set-dot.active {
+      background: var(--accent-3);
+      border-color: #bbf7d0;
+      box-shadow: 0 0 0 1px rgba(34,197,94,0.7);
+    }
+
+    input[type="number"], input[type="text"] {
+      width: 100%;
+      max-width: 120px;
+      background: #020617;
+      border-radius: 8px;
+      border: 1px solid #1f2937;
+      color: var(--text-main);
+      font-size: 11px;
+      padding: 3px 6px;
+    }
+
+    input[type="number"]::placeholder,
+    input[type="text"]::placeholder {
+      color: #6b7280;
+    }
+
+    input[type="number"]:focus,
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(249,115,22,0.45);
+    }
+
+    /* SIDE CARDS */
+    .side-column {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .side-card {
+      background: radial-gradient(circle at top right, #020617, #020617 55%, #020617);
+      border-radius: var(--radius-lg);
+      padding: 10px 10px 11px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(59,130,246,0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .side-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(56,189,248,0.2), transparent 60%);
+      pointer-events: none;
+    }
+
+    .side-card-inner { position: relative; z-index: 1; }
+
+    .side-card h3 {
+      margin: 0 0 4px;
+      font-size: 13px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 5px;
+    }
+
+    .chip {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.98);
+      color: #e5e7eb;
+    }
+
+    .tips-list {
+      list-style: none;
+      padding-right: 16px;
+      margin: 0;
+      font-size: 11px;
+      color: #e5e7eb;
+    }
+
+    .tips-list li::before {
+      content: "• ";
+      color: var(--accent);
+    }
+
+    .tips-list li {
+      margin-bottom: 3px;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .history-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 11px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      border-radius: 8px;
+      padding: 4px 6px;
+      border: 1px solid #111827;
+      background: rgba(15,23,42,0.92);
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .history-item span.label {
+      color: #e5e7eb;
+    }
+
+    .history-item span.meta {
+      color: var(--text-muted);
+    }
+
+    /* WORKOUT MODE */
+    .workout-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(260px, 1.3fr);
+      gap: 10px;
+    }
+    @media (max-width: 900px) {
+      .workout-layout { grid-template-columns: 1fr; }
+    }
+
+    .workout-main-title {
+      font-size: 14px;
+      margin: 0 0 6px;
+    }
+
+    .workout-ex-name {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 4px;
+    }
+
+    .workout-ex-muscle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .workout-sets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .workout-sets span.tag {
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.9);
+      background: rgba(15,23,42,0.96);
+    }
+
+    .workout-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+
+    .timer-display {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--accent-2);
+    }
+
+    .workout-steps {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .workout-list {
+      font-size: 11px;
+      max-height: 220px;
+      overflow-y: auto;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .workout-list-item {
+      padding: 4px 6px;
+      border-radius: 8px;
+      border: 1px solid #111827;
+      background: rgba(15,23,42,0.95);
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .workout-list-item.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(249,115,22,0.55);
+    }
+
+    /* EXERCISE LIBRARY */
+    .exercise-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .exercise-card {
+      border-radius: 12px;
+      padding: 8px;
+      border: 1px solid #111827;
+      background: radial-gradient(circle at top, #020617, #020617 65%, #020617);
+    }
+
+    .exercise-card h4 {
+      margin: 0 0 2px;
+      font-size: 13px;
+    }
+
+    .exercise-card .muscle {
+      font-size: 11px;
+      color: var(--accent-2);
+      margin-bottom: 4px;
+    }
+
+    .exercise-card p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* HISTORY PAGE */
+    .history-group {
+      margin-bottom: 6px;
+      border-radius: 10px;
+      border: 1px solid #111827;
+      background: rgba(15,23,42,0.96);
+      padding: 6px 8px;
+      font-size: 11px;
+    }
+
+    .history-group-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #e5e7eb;
+    }
+
+    .history-group-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .history-group-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 2px;
+      color: var(--text-muted);
+    }
+
+    /* PR PAGE */
+    .pr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .pr-card {
+      border-radius: 12px;
+      padding: 8px;
+      border: 1px solid #111827;
+      background: radial-gradient(circle at top, #020617, #020617 60%, #020617);
+    }
+
+    .pr-card h4 {
+      margin: 0 0 2px;
+      font-size: 13px;
+    }
+
+    .pr-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-3);
+    }
+
+    .pr-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* SETTINGS */
+    .settings-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .settings-row label {
+      font-weight: 500;
+    }
+
+    select {
+      background: #020617;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      color: #e5e7eb;
+      font-size: 12px;
+      padding: 4px 8px;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 1px rgba(56,189,248,0.6);
+    }
+
+    .small-note {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* EXPORT BUTTONS */
+    .export-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+      font-size: 11px;
+    }
+
+  
+  /* ==== Monochrome Black & White theme overrides with glow ==== */
+  :root {
+    --bg-main: #050505;
+    --bg-card: #050505;
+    --bg-card-soft: #101010;
+    --accent: #f5f5f5;
+    --accent-2: #e5e5e5;
+    --accent-3: #d4d4d4;
+    --text-main: #f5f5f5;
+    --text-muted: #a3a3a3;
+    --border-subtle: #262626;
+  }
+
+  body {
+    background: radial-gradient(circle at top, #050505 0, #050505 40%, #000000 100%);
+  }
+
+  .nav-sidebar {
+    background: radial-gradient(circle at top, #050505 0, #020202 60%, #000000 100%) !important;
+    border-color: #262626 !important;
+  }
+
+  .card,
+  .card-inner,
+  .day-selector button,
+  .btn-secondary {
+    background: #050505 !important;
+    border-color: #262626 !important;
+  }
+
+  .nav-item.active,
+  .day-selector button.active,
+  .btn-primary,
+  .status-badge,
+  .tag-pill,
+  .progress-bar-fill {
+    background: #f5f5f5 !important;
+    color: #050505 !important;
+    border-color: #f5f5f5 !important;
+  }
+
+  .section-title,
+  .field-label,
+  .kpi-label,
+  .metric-value,
+  .tag-pill-outline {
+    color: #f5f5f5 !important;
+  }
+
+  canvas {
+    filter: grayscale(1);
+  }
+
+  /* === Auth overlay layout (B/W Glow) === */
+  #auth-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at top, rgba(0,0,0,0.96), #000000);
+    backdrop-filter: blur(6px);
+    color: #f9fafb;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    direction: rtl;
+  }
+  .auth-shell {
+    width: 100%;
+    max-width: 980px;
+    padding: 24px;
+  }
+  .auth-layout {
+    position: relative;
+    border-radius: 28px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #050505, #111111);
+    border: 1px solid rgba(249,249,249,0.08);
+    box-shadow:
+      0 26px 80px rgba(0,0,0,0.9),
+      0 0 0 1px rgba(15,15,15,1);
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.3fr);
+  }
+  @media (max-width: 780px) {
+    .auth-layout {
+      grid-template-columns: 1fr;
+    }
+    .auth-hero {
+      display: none;
+    }
+  }
+  .auth-layout::before,
+  .auth-layout::after {
+    content: "";
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(40px);
+    opacity: 0.85;
+    pointer-events: none;
+  }
+  .auth-layout::before {
+    width: 260px;
+    height: 260px;
+    top: -80px;
+    left: -80px;
+    background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%);
+  }
+  .auth-layout::after {
+    width: 280px;
+    height: 280px;
+    bottom: -120px;
+    right: -60px;
+    background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
+  }
+  .auth-hero {
+    position: relative;
+    padding: 30px 34px;
+    border-left: 1px solid rgba(31,31,31,0.9);
+    background: radial-gradient(circle at top left, #050505, #020202);
+  }
+  .auth-hero-title {
+    font-size: 26px;
+    margin: 0 0 10px;
+    letter-spacing: 0.03em;
+  }
+  .auth-hero-title span {
+    background: linear-gradient(135deg,#ffffff,#d4d4d4);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+  .auth-hero-sub {
+    margin: 0 0 20px;
+    font-size: 13px;
+    color: #d4d4d4;
+  }
+  .auth-hero-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+  .auth-pill {
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(229,229,229,0.35);
+    font-size: 11px;
+    color: #f5f5f5;
+    background: rgba(10,10,10,0.9);
+    backdrop-filter: blur(6px);
+  }
+  .auth-hero-foot {
+    font-size: 11px;
+    color: #a3a3a3;
+  }
+  .auth-panel {
+    position: relative;
+    padding: 30px 26px;
+    background: radial-gradient(circle at top right, #111111, #020202);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .auth-logo {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #a3a3a3;
+  }
+  .auth-logo span {
+    color: #ffffff;
+  }
+  .auth-title-main {
+    margin: 4px 0 4px;
+    font-size: 20px;
+    font-weight: 600;
+  }
+  .auth-title-sub {
+    margin: 0;
+    font-size: 12px;
+    color: #d4d4d4;
+  }
+  .auth-form {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .auth-label {
+    font-size: 12px;
+    color: #e5e5e5;
+    margin-bottom: 3px;
+  }
+  .auth-input {
+    width: 100%;
+    padding: 10px 11px;
+    border-radius: 12px;
+    border: 1px solid rgba(229,229,229,0.35);
+    background: rgba(10,10,10,0.95);
+    color: #f9fafb;
+    font-size: 13px;
+    outline: none;
+    transition: 0.15s;
+  }
+  .auth-input::placeholder {
+    color: #737373;
+  }
+  .auth-input:focus {
+    border-color: rgba(249,249,249,0.9);
+    box-shadow: 0 0 0 1px rgba(249,249,249,0.8);
+    background: #050505;
+  }
+  .auth-btn-main {
+    width: 100%;
+    padding: 11px 12px;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(135deg,#ffffff,#e5e5e5);
+    color: #050505;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow:
+      0 18px 55px rgba(0,0,0,0.9),
+      0 0 0 1px rgba(24,24,27,1);
+    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background 0.12s;
+  }
+  .auth-btn-main:hover {
+    transform: translateY(-1px);
+    background: #ffffff;
+    box-shadow:
+      0 22px 70px rgba(0,0,0,1),
+      0 0 0 1px rgba(39,39,42,1);
+  }
+  .auth-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: #a3a3a3;
+  }
+  .auth-link {
+    color: #ffffff;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .auth-error {
+    font-size: 12px;
+    color: #f97373;
+    text-align: center;
+    display: none;
+  }
+  .auth-small {
+    font-size: 11px;
+    color: #a3a3a3;
+    text-align: center;
+  }
+
+    /* ==== Strong monochrome overrides for whole app ==== */
+    html, body {
+      background: radial-gradient(circle at top, #000000 0, #050505 45%, #000000 100%) !important;
+      color: #f5f5f5 !important;
+    }
+    body {
+      min-height: 100vh;
+    }
+    body, body * {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+    }
+    .side-nav,
+    .card,
+    .day-strip,
+    .workout-card,
+    .nav-header,
+    .nav-card,
+    .summary-card,
+    .kpi-card,
+    .graph-card,
+    .export-card,
+    .notes-card {
+      background: #050505 !important;
+      border-color: #262626 !important;
+      box-shadow: 0 22px 60px rgba(0,0,0,0.95) !important;
+    }
+    .day-button,
+    .nav-item,
+    .btn,
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger,
+    .pill,
+    .tag,
+    .day-chip {
+      background: #050505 !important;
+      border-color: #404040 !important;
+      color: #f5f5f5 !important;
+    }
+    .nav-item.active,
+    .day-button.active,
+    .btn-primary,
+    .btn-primary:hover,
+    .primary-chip {
+      background: #f5f5f5 !important;
+      color: #050505 !important;
+      border-color: #f5f5f5 !important;
+    }
+    .progress-bar-inner,
+    .weekly-progress-inner,
+    .volume-bar-fill {
+      background: #f5f5f5 !important;
+    }
+    input,
+    select,
+    textarea {
+      background: #050505 !important;
+      border-color: #404040 !important;
+      color: #f5f5f5 !important;
+    }
+    input::placeholder,
+    textarea::placeholder {
+      color: #737373 !important;
+    }
+
+  /* global grayscale to kill any leftover colors */
+  html {
+    filter: grayscale(1);
+  }
+  body {
+    background-color: #000000 !important;
+  }
+</style>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBiFgNlgRkAAhZbRKEHHE4nLzKzbK0qBwg",
+      authDomain: "training-planner-9a18e.firebaseapp.com",
+      projectId: "training-planner-9a18e",
+      storageBucket: "training-planner-9a18e.firebasestorage.app",
+      messagingSenderId: "938674112974",
+      appId: "1:938674112974:web:05ffbb8ca3d27746ea839f",
+      measurementId: "G-1R38X0YDSE"
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
+
+</head>
+<body>
+  <!-- ===== Auth Overlay ===== -->
+  <div id="auth-screen">
+    <div class="auth-shell">
+      <div class="auth-layout">
+        <section class="auth-panel">
+          <div>
+            <div class="auth-logo"><span>TP</span> • TRAINING</div>
+            <h3 id="authTitle" class="auth-title-main">התחברות למערכת</h3>
+            <p id="authSubtitle" class="auth-title-sub">
+              הזן אימייל וסיסמה כדי להיכנס למערכת האימונים האישית שלך בענן.
+            </p>
+          </div>
+
+          <form class="auth-form" onsubmit="return false;">
+            <div>
+              <div class="auth-label">אימייל</div>
+              <input id="loginEmail" type="email" class="auth-input" placeholder="name@example.com">
+            </div>
+            <div>
+              <div class="auth-label">סיסמה</div>
+              <input id="loginPass" type="password" class="auth-input" placeholder="••••••••">
+            </div>
+            <button id="loginBtn" type="button" class="auth-btn-main" onclick="handleAuthClick()">המשך למערכת</button>
+          </form>
+
+          <div class="auth-meta-row">
+            <span id="authSwitchText">אין לך משתמש עדיין?</span>
+            <span class="auth-link" id="authSwitchLink">יצירת חשבון חדש</span>
+          </div>
+
+          <div class="auth-meta-row" style="margin-top:6px;">
+            <span></span>
+            <span class="auth-link" id="forgotPassLink">שכחתי סיסמה</span>
+          </div>
+
+          <div id="authError" class="auth-error"></div>
+          <div class="auth-small">הגישה למערכת היא אישית ומוגנת בסיסמה דרך Firebase.</div>
+        </section>
+
+        <section class="auth-hero">
+          <h2 class="auth-hero-title"><span>Training Planner</span></h2>
+          <p class="auth-hero-sub">
+            מערכת מסודרת לניהול תוכנית האימונים – ימים, תרגילים, משקלים והתקדמות – עם שמירה בענן.
+          </p>
+          <div class="auth-hero-pills">
+            <div class="auth-pill">תוכנית שבועית</div>
+            <div class="auth-pill">מעקב משקלים</div>
+            <div class="auth-pill">סטים וחזרות</div>
+          </div>
+          <p class="auth-hero-foot">
+            התחבר כדי להמשיך בדיוק מאיפה שעצרת, מכל מחשב שמחובר לחשבון שלך.
+          </p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-shell">
+    <!-- SIDE NAV -->
+    <aside class="side-nav">
+      <div class="side-nav-header">
+        <div class="brand-logo">TP</div>
+        <div class="side-nav-title">
+          <h1><span>Training</span> Planner</h1>
+          <p>מערכת מלאה למעקב אימוני כוח</p>
+        </div>
+      </div>
+
+      <div class="nav-section-title">ניווט</div>
+      <ul class="nav-list">
+        <li class="nav-item active" data-page="dashboard">
+          <span class="icon">📊</span> דשבורד יומי
+        </li>
+        <li class="nav-item" data-page="workout">
+          <span class="icon">🏋️‍♂️</span> מצב אימון
+        </li>
+        <li class="nav-item" data-page="library">
+          <span class="icon">📘</span> ספריית תרגילים
+        </li>
+        <li class="nav-item" data-page="history">
+          <span class="icon">📅</span> יומן אימונים
+        </li>
+        <li class="nav-item" data-page="prs">
+          <span class="icon">🏅</span> שיאים אישיים
+        </li>
+        
+        <li class="nav-item nav-owner-only" data-page="ownerPanel" style="display:none;">
+          <span class="icon">🛠️</span> פאנל בעלים
+        </li>
+        <li class="nav-item nav-trainer-only" data-page="trainerPanel" style="display:none;">
+          <span class="icon">🧑‍🏫</span> פאנל מאמן
+        </li><li class="nav-item" data-page="settings">
+          <span class="icon">⚙️</span> הגדרות
+        </li>
+      </ul>
+
+      <div class="nav-footer">
+        <div>כל הנתונים נשמרים כרגע בדפדפן שלך (localStorage).<br>
+        אם אתה מחובר, הנתונים מסונכרנים גם לענן (Firebase).</div>
+        <div id="roleBadge" style="margin-top:6px;font-size:11px;color:#9ca3af;"></div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <div class="top-bar">
+        <div class="top-title">
+          <h2 id="mainPageTitle">דשבורד אימונים שבועי</h2>
+          <p id="mainPageSubtitle">מעקב משקלים, סטים והתקדמות לאורך זמן.</p>
+        </div>
+        <div class="top-pills">
+          <div class="pill-stat"><span class="icon">📆</span>6 ימי אימון בשבוע</div>
+          <div class="pill-stat"><span class="icon">📈</span>מטרה: עלייה הדרגתית בעומס</div>
+          <div class="pill-stat"><span class="icon">💾</span>נשמר אוטומטית במכשיר שלך</div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD PAGE -->
+      <section id="dashboard" class="page active">
+        <div class="day-strip">
+          <div class="day-buttons" id="dayButtons"></div>
+          <div class="week-label">
+            שבוע נוכחי: <span>מסה / הורדת אחוז שומן</span><br />
+            בחר יום, רשום משקלים – המערכת תבנה עבורך היסטוריה וגרף.
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <section class="card">
+            <div class="card-inner">
+              <div class="card-header">
+                <div>
+                  <h3 id="dayTitle" style="margin:0;font-size:15px;">יום ראשון – חזה + כתפיים + יד אחורית</h3>
+                  <p id="daySubtitle" style="margin:2px 0 0;font-size:11px;color:#fb923c;">
+                    חזה כבד + כתף קדמית/אמצעית + טרייספס
+                  </p>
+                </div>
+                <div class="badge-live">
+                  <span class="dot"></span> אימון פעיל – דשבורד
+                </div>
+              </div>
+
+              <div class="meta-row">
+                <div class="meta-pill"><span class="icon">🏋️‍♂️</span>תרגילי בסיס + בידוד</div>
+                <div class="meta-pill"><span class="icon">⏱</span>מנוחות: 2–3 דק' בסיס / 60–90 שנ' בידוד</div>
+                <div class="meta-pill"><span class="icon">🎯</span>שמור משקלים אחרי כל אימון</div>
+              </div>
+
+              <div class="controls-row">
+                <label for="workoutDate">תאריך אימון:</label>
+                <input type="date" id="workoutDate" />
+                <button class="btn btn-danger" id="resetDayBtn">🧹 איפוס נתוני היום</button>
+                <button class="btn btn-main" id="goWorkoutModeBtn">🏋️‍♂️ מעבר למצב אימון</button>
+              </div>
+
+              <p class="info-text">
+                כל משקל/הערה שאתה מזין נשמרים אוטומטית לפי יום ותאריך.  
+                ההיסטוריה משמשת לגרף, יומן אימונים ושיאים אישיים (PRs).
+              </p>
+
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>תרגיל</th>
+                      <th>סטים × חזרות</th>
+                      <th>קבוצת שריר</th>
+                      <th>סטים שבוצעו</th>
+                      <th>משקל (ק״ג)</th>
+                      <th>הערות</th>
+                    </tr>
+                  </thead>
+                  <tbody id="exerciseTableBody"></tbody>
+                </table>
+              </div>
+
+              <h4 style="margin:6px 0 4px;font-size:12px;">יומן אימונים ליום הנוכחי</h4>
+              <ul class="history-list" id="dayHistoryList"></ul>
+            </div>
+          </section>
+
+          <aside class="side-column">
+            <section class="side-card">
+              <div class="side-card-inner">
+                <h3>טיפים חשובים להתקדמות</h3>
+                <div class="chip-row">
+                  <div class="chip">Progressive Overload</div>
+                  <div class="chip">טכניקה לפני משקל</div>
+                  <div class="chip">שינה ותזונה</div>
+                </div>
+                <ul class="tips-list">
+                  <li>מטרה: לעלות בעומס (משקל/חזרות/סטים) כל 1–2 שבועות בצורה חכמה.</li>
+                  <li>בתרגילי בסיס – שליטה, לא לזרוק משקל. אם הטכניקה נשברת, להוריד משקל.</li>
+                  <li>להשאיר 1–3 חזרות ברזרבה ברוב הסטים – לא חייבים כישלון בכל סט.</li>
+                  <li>חלבון 1.6–2 גרם לכל ק״ג משקל גוף + 2–3 ליטר מים ביום.</li>
+                  <li>שינה טובה תיתן יותר תוצאות מעוד סט אחד בסוף אימון שאתה גמור בו.</li>
+                </ul>
+                <p class="footer-note">
+                  עקביות + מעקב מסודר = התקדמות.  
+                  האתר רק עוזר לך להיות מסודר – העבודה בחדר הכושר 💪
+                </p>
+              </div>
+            </section>
+
+            <section class="side-card">
+              <div class="side-card-inner">
+                <h3>גרף התקדמות – לפי תרגיל</h3>
+                <div class="controls-row" style="margin-bottom:4px;">
+                  <label for="exerciseSelect">בחר תרגיל לגרף:</label>
+                  <select id="exerciseSelect"></select>
+                </div>
+                <canvas id="progressChart" height="150"></canvas>
+                <p class="small-note">
+                  הגרף מציג משקלים לאורך זמן עבור התרגיל שנבחר – לפי תאריך האימון.
+                </p>
+                <div class="settings-row" style="margin-top:8px;gap:8px;flex-wrap:wrap;">
+                  <button id="resetSelectedGraphBtn" class="btn ghost">🗑️ איפוס הגרף לתרגיל הנבחר</button>
+                  <button id="resetAllGraphsBtn" class="btn danger">📉 איפוס כל הגרפים</button>
+                </div>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <!-- WORKOUT MODE PAGE -->
+      <section id="workout" class="page">
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <h3 class="workout-main-title">מצב אימון – ביצוע סטים בזמן אמת</h3>
+                <p style="margin:0;font-size:11px;color:#fb923c;">
+                  בחר יום, התחל אימון, סמן סטים, השתמש בטיימר מנוחה והמערכת תשמור לך הכל.
+                </p>
+              </div>
+              <div class="badge-live">
+                <span class="dot"></span> מצב אימון פעיל
+              </div>
+            </div>
+
+            <div class="workout-layout">
+              <div>
+                <div class="controls-row">
+                  <label>יום:</label>
+                  <select id="workoutDaySelect"></select>
+
+                  <label>תאריך:</label>
+                  <input type="date" id="workoutModeDate" />
+                </div>
+
+                <hr style="border:none;border-top:1px solid #111827;margin:6px 0;" />
+
+                <div id="workoutCurrentContainer">
+                  <p class="workout-ex-name" id="workoutExName">לא נבחר תרגיל עדיין</p>
+                  <p class="workout-ex-muscle" id="workoutExMuscle"></p>
+                  <div class="workout-sets">
+                    <span class="tag" id="workoutSetsRepsTag">סטים × חזרות</span>
+                    <span class="tag" id="workoutIndexTag">תרגיל 1 מתוך X</span>
+                  </div>
+
+                  <div class="workout-controls">
+                    <label>סט נוכחי:</label>
+                    <span id="currentSetLabel">1</span>
+                    <button class="btn btn-main" id="finishSetBtn">✔ סיימתי סט</button>
+                    <button class="btn btn-ghost" id="nextExerciseBtn">⏭ תרגיל הבא</button>
+                  </div>
+
+                  <div class="workout-controls">
+                    <label>משקל נוכחי (ק״ג):</label>
+                    <input type="number" id="workoutWeightInput" step="0.5" style="max-width:90px;" />
+                    <button class="btn btn-ghost" id="saveWorkoutWeightBtn">💾 שמור משקל</button>
+                  </div>
+
+                  <div class="workout-controls">
+                    <label>טיימר מנוחה (שניות):</label>
+                    <select id="restSelect">
+                      <option value="60">60</option>
+                      <option value="90" selected>90</option>
+                      <option value="120">120</option>
+                    </select>
+                    <button class="btn btn-main" id="startRestBtn">⏱ התחל מנוחה</button>
+                    <span class="timer-display" id="restTimerDisplay">00:00</span>
+                  </div>
+
+                  <p class="workout-steps">
+                    1. בחר יום ותאריך.  
+                    2. בחר תרגיל מהצד או לחץ “תרגיל הבא”.  
+                    3. עדכן משקל, לחץ “סיימתי סט”, והשתמש בטיימר מנוחה.  
+                    4. הכל נשמר לטבלה, להיסטוריה ולשיאים.
+                  </p>
+                </div>
+              </div>
+
+              <aside class="side-card">
+                <div class="side-card-inner">
+                  <h3>רשימת התרגילים ליום הנוכחי</h3>
+                  <ul class="workout-list" id="workoutExerciseList"></ul>
+                  <p class="small-note">
+                    לחץ על תרגיל ברשימה כדי לעבור אליו.  
+                    שדות המשקל והסטים מסונכרנים עם הדשבורד הראשי.
+                  </p>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- EXERCISE LIBRARY PAGE -->
+      <section id="library" class="page">
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <h3 style="margin:0;font-size:15px;">ספריית תרגילים</h3>
+                <p style="margin:2px 0 0;font-size:11px;color:#fb923c;">
+                  כל התרגילים מהתוכנית שלך – עם קבוצת שריר והסבר קצר לביצוע.
+                </p>
+              </div>
+            </div>
+
+            <div class="exercise-grid" id="exerciseLibraryGrid"></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- HISTORY PAGE -->
+      <section id="history" class="page">
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <h3 style="margin:0;font-size:15px;">יומן אימונים מלא</h3>
+                <p style="margin:2px 0 0;font-size:11px;color:#fb923c;">
+                  כל האימונים שלך לפי תאריך, יום ותרגיל – נבנה אוטומטית מהנתונים.
+                </p>
+              </div>
+            </div>
+
+            <div class="export-row">
+              <button class="btn btn-main" id="exportCsvBtn">📊 ייצוא לאקסל (CSV)</button>
+              <span class="small-note">
+                הקובץ יכיל: יום, תאריך, תרגיל, משקל ושעה שנשמר.
+              </span>
+            </div>
+
+            <div id="historyContainer"></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- PRS PAGE -->
+      <section id="prs" class="page">
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <h3 style="margin:0;font-size:15px;">שיאים אישיים (PRs)</h3>
+                <p style="margin:2px 0 0;font-size:11px;color:#fb923c;">
+                  לכל תרגיל – המשקל הכי גבוה שעשית אי פעם + תאריך השיא.
+                </p>
+              </div>
+            </div>
+
+            <div class="pr-grid" id="prGrid"></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- OWNER PANEL PAGE -->
+      <section id="ownerPanel" class="page">
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <h3 style="margin:0;font-size:15px;">פאנל בעלים</h3>
+                <p style="margin:2px 0 0;font-size:11px;color:#fb923c;">
+                  ניהול משתמשים, תפקידים ונתוני מתאמנים – הכול מתוך האתר.
+                </p>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <label>אימייל מחובר:</label>
+              <span id="ownerEmailLabel">-</span>
+            </div>
+
+            <div class="settings-row">
+              <label>תפקיד במערכת:</label>
+              <span id="ownerRoleLabel">מתאמן</span>
+            </div>
+
+            <div class="settings-row" style="margin-top:12px;gap:8px;flex-wrap:wrap;">
+              <button id="ownerRefreshUsersBtn" class="btn primary">רענן רשימת משתמשים</button>
+              <button id="ownerCreateUserBtn" class="btn ghost">יצירת משתמש חדש</button>
+            </div>
+
+            <p class="small-note" style="margin-top:6px;">
+              כל הפעולות כאן משפיעות על משתמשים אמתיים – מומלץ להשתמש בזה בזהירות.
+            </p>
+
+            <div id="ownerUsersTableContainer" class="table-container" style="margin-top:12px;max-height:360px;overflow:auto;"></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- TRAINER PANEL PAGE -->
+      <section id="trainerPanel" class="page">
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <h3 style="margin:0;font-size:15px;">פאנל מאמן</h3>
+                <p style="margin:2px 0 0;font-size:11px;color:#fb923c;">
+                  צפייה במתאמנים המשויכים אליך, מצב כללי שלהם וגישה לנתוני האימונים מהענן.
+                </p>
+              </div>
+            </div>
+
+            <div id="trainerTraineesContainer" style="margin-top:8px;">
+              <p class="small-note">כאן תופיע רשימת המתאמנים המשויקים אליך מתוך המערכת.</p>
+            </div>
+
+            <div id="trainerTraineeDetailsContainer" style="margin-top:12px; display:none;">
+              <section class="card" style="padding:8px;border-color:#111827;">
+                <div class="card-inner">
+                  <div class="card-header">
+                    <div>
+                      <h4 style="margin:0;font-size:13px;">נתוני מתאמן</h4>
+                      <p style="margin:2px 0 0;font-size:11px;color:#9ca3af;">
+                        תצוגה טכנית של מצב האימונים מהענן (training_states) – לקריאה בלבד.
+                      </p>
+                    </div>
+                    <button id="trainerCloseDetailsBtn" class="btn btn-ghost" style="font-size:11px;padding:4px 8px;">סגור</button>
+                  </div>
+                  <pre id="trainerTraineeDetailsPre" style="margin-top:6px;max-height:240px;overflow:auto;font-size:11px;direction:ltr;text-align:left;background:#020617;border-radius:8px;padding:8px;"></pre>
+                </div>
+              </section>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- SETTINGS PAGE -->
+      <section id="settings" class="page">
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <h3 style="margin:0;font-size:15px;">הגדרות</h3>
+                <p style="margin:2px 0 0;font-size:11px;color:#fb923c;">
+                  שליטה על זמני מנוחה, עיצוב בסיסי ואיפוס נתונים.
+                </p>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <label for="defaultRestSelect">זמן מנוחה ברירת מחדל (מצב אימון):</label>
+              <select id="defaultRestSelect">
+                <option value="60">60 שניות</option>
+                <option value="90">90 שניות</option>
+                <option value="120">120 שניות</option>
+              </select>
+            </div>
+            <p class="small-note">
+              ההגדרה הזו תשפיע על הטיימר במצב אימון. ניתן לשנות גם משם ידנית.
+            </p>
+
+            <hr style="border:none;border-top:1px solid #111827;margin:10px 0;">
+
+            <div class="settings-row">
+              <button class="btn btn-danger" id="resetAllDataBtn">🧨 איפוס כל הנתונים (כל הימים והתאריכים)</button>
+            </div>
+            <p class="small-note">
+              פעולה זו תמחק את כל המשקלים, ההערות, ההיסטוריה והשיאים (PRs) מהמכשיר הזה בלבד.  
+              (בעתיד כשנחבר לענן – נוכל לעשות איפוס ענן נפרד.)
+            </p>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+<script>
+  // ===== DATA MODEL =====
+  const program = {
+    sunday: {
+      title: "יום ראשון – חזה + כתפיים + יד אחורית",
+      subtitle: "חזה כבד + כתף קדמית/אמצעית + טרייספס",
+      exercises: [
+        {
+          name: "לחיצת חזה במוט (בנץ')",
+          muscle: "חזה",
+          sets: 4, reps: "6–8",
+          description: "תרגיל בסיס לחזה אמצעי ותחתון. לשכב יציב, שכמות מכווצות לאחור, להוריד את המוט בשליטה עד קרוב לחזה ולדחוף חזק מעלה."
+        },
+        {
+          name: "לחיצת חזה בשיפוע עליון עם דאמבלים",
+          muscle: "חזה עליון",
+          sets: 4, reps: "8–10",
+          description: "לחיצה בזווית 30° עם דאמבלים כדי לעבוד על החזה העליון. לשמור על שליטה מלאה ותנועה בקשת טבעית."
+        },
+        {
+          name: "פרפר במכונה לחזה",
+          muscle: "חזה אמצעי",
+          sets: 3, reps: "12–15",
+          description: "בידוד לחזה. לסגור את הידיים עד שהן כמעט נוגעות, לעצור שנייה בכיווץ ולשחרר באיטיות."
+        },
+        {
+          name: "קרוס אובר מלמעלה למטה (פולי עליון)",
+          muscle: "חזה תחתון",
+          sets: 3, reps: "12–15",
+          description: "למשוך את הכבלים באלכסון מלמעלה למטה, מרפקים מעט כפופים, לסיים בערך בגובה בטן עליונה."
+        },
+        {
+          name: "לחיצת כתפיים במכונה",
+          muscle: "כתף קדמית",
+          sets: 3, reps: "8–10",
+          description: "לחיצת כתפיים בישיבה. הידיים מתחילות בערך בגובה כתף, לדחוף למעלה בלי לנעול מרפקים."
+        },
+        {
+          name: "הרחקת כתפיים לצדדים עם דאמבלים",
+          muscle: "כתף אמצעית",
+          sets: 3, reps: "12–15",
+          description: "להרים את הדאמבלים לצדדים עד גובה הכתף בלבד, מרפקים מעט כפופים, שליטה ולא תנופה."
+        },
+        {
+          name: "פשיטת מרפקים מעל הראש עם דאמבל",
+          muscle: "יד אחורית – ראש ארוך",
+          sets: 3, reps: "10–12",
+          description: "ישיבה או עמידה, דאמבל אחד בשתי ידיים מעל הראש. לרדת עמוק מאחורי הראש וליישר בשקט."
+        },
+        {
+          name: "פשיטת מרפקים בחבל בפולי עליון",
+          muscle: "יד אחורית – ראש צדדי",
+          sets: 3, reps: "12–15",
+          description: "לעמוד צמוד לפולי, מרפקים ליד הגוף, לדחוף את החבל למטה ולפתוח אותו בסוף הטווח."
+        }
+      ]
+    },
+    monday: {
+      title: "יום שני – גב + יד קדמית + אמות",
+      subtitle: "גב מלא – רוחב, עובי, עליון ותחתון + בייספס",
+      exercises: [
+        {
+          name: "מתח באחיזה רחבה",
+          muscle: "גב רחב",
+          sets: 4, reps: "6–8 / 8–10",
+          description: "לתפוס רחב מעט מכתף, למשוך את בית החזה לכיוון המוט, לחשוב על משיכה עם המרפקים למטה."
+        },
+        {
+          name: "חתירה למוט T",
+          muscle: "גב אמצעי/עובי",
+          sets: 4, reps: "8–10",
+          description: "פלג גוף עליון נוטה קדימה, גב ניטרלי, למשוך את הידיות לכיוון הבטן תוך שמירה על גב חזק."
+        },
+        {
+          name: "חתירה בישיבה בפולי תחתון",
+          muscle: "גב אמצעי",
+          sets: 3, reps: "10–12",
+          description: "לשבת זקוף, למשוך את הידיות לכיוון הבטן, להחזיק שנייה בכיווץ ולשחרר לאט קדימה."
+        },
+        {
+          name: "פרפר הפוך במכונה/פולי",
+          muscle: "גב עליון + כתף אחורית",
+          sets: 3, reps: "12–15",
+          description: "לפתוח את הידיים לאחור עד גובה כתף, לשמור על חזה קדימה ועל תנועה מבוקרת."
+        },
+        {
+          name: "פשיטת גב בכיסא רומי",
+          muscle: "גב תחתון",
+          sets: 3, reps: "12–15",
+          description: "לכופף את הגוף למטה באיטיות ולעלות עד קו ישר עם הגוף, לא מעבר ולא לנעול גב."
+        },
+        {
+          name: "כפיפות מרפקים בעמידה",
+          muscle: "יד קדמית",
+          sets: 3, reps: "10–12",
+          description: "לעמוד יציב, מרפקים צמודים לגוף, להעלות ולרדת באיטיות בלי נפנוף."
+        },
+        {
+          name: "כפיפות פטישים עם דאמבלים",
+          muscle: "יד קדמית (ברכיאליס)",
+          sets: 3, reps: "12",
+          description: "אחיזה ניטרלית (כאילו מחזיק פטיש), מעלה עד זווית 90–120° ושולט בירידה."
+        },
+        {
+          name: "כפיפת שורש כף היד הפוכה",
+          muscle: "אמות",
+          sets: 3, reps: "12–15",
+          description: "לשבת, אמות מונחות, גב כף היד למעלה, להרים את המשקל בעזרת שורש כף היד בלבד."
+        }
+      ]
+    },
+    tuesday: {
+      title: "יום שלישי – רגליים + ליבה",
+      subtitle: "רגליים מלאות – קוואדריספס, אחורי הירך, ישבן ותאומים",
+      exercises: [
+        {
+          name: "האקט סקוואט במכונה",
+          muscle: "קוואד + ישבן",
+          sets: 4, reps: "8–10",
+          description: "לעמוד נכון על הפלטה, לרדת עמוק תוך שמירה על גב צמוד למשענת, לא ליישר ברכיים עד הסוף."
+        },
+        {
+          name: "לחיצת רגליים במכונה",
+          muscle: "כל הרגל",
+          sets: 4, reps: "10–12",
+          description: "רגליים ברוחב כתפיים, לפתוח מעט החוצה, לרדת עמוק ולדחוף בשליטה."
+        },
+        {
+          name: "פשיטת ברכיים במכונה",
+          muscle: "קוואדריספס",
+          sets: 3, reps: "12–15",
+          description: "ליישר את הרגליים עד כמעט נעילה, לעצור שנייה בכיווץ ולשחרר באיטיות."
+        },
+        {
+          name: "כפיפת ברכיים בעמידה/מכונה",
+          muscle: "אחורי הירך",
+          sets: 3, reps: "12–15",
+          description: "לכופף את הברך כנגד התנגדות, להרגיש את אחורי הירך, לשחרר לאט."
+        },
+        {
+          name: "דדליפט רומני (RDL)",
+          muscle: "ישבן + מסטרינג",
+          sets: 3, reps: "8–10",
+          description: "גב ישר, ברכיים חצי כפופות, להוריד את המשקל לאורך הרגליים עד מתיחה חזקה באחורי הירך."
+        },
+        {
+          name: "הרמת עקבים בלחיצת רגליים",
+          muscle: "תאומים עליון",
+          sets: 3, reps: "12–20",
+          description: "בישיבה במכונה או על הפלטה, להוריד את העקבים עמוק ולעלות כמה שיותר גבוה."
+        },
+        {
+          name: "הרמת עקבים בישיבה במכונה",
+          muscle: "תאומים תחתון",
+          sets: 3, reps: "12–20",
+          description: "ישיבה, משקל על הברכיים, עבודה איטית ומבוקרת בטווח מלא."
+        },
+        {
+          name: "כפיפות בטן במכונה",
+          muscle: "ליבה",
+          sets: 3, reps: "15",
+          description: "לכווץ את הבטן ולא למשוך בידיים, להוציא אוויר בזמן הכיווץ."
+        }
+      ]
+    },
+    wednesday: {
+      title: "יום רביעי – חזה + כתף קדמית + כתף אמצעית + יד אחורית",
+      subtitle: "שילוב נוסף לחזה + כתפיים + טרייספס",
+      exercises: [
+        {
+          name: "לחיצת חזה בשיפוע חיובי עם דאמבלים",
+          muscle: "חזה עליון",
+          sets: 4, reps: "8–10",
+          description: "כמו ביום ראשון – דגש על חזה עליון, שליטה בזווית ויציבות בכתפיים."
+        },
+        {
+          name: "לחיצת חזה בעמידה עם כבלים",
+          muscle: "חזה אמצעי/תחתון",
+          sets: 3, reps: "10–12",
+          description: "לעמוד באמצע, למשוך את הידיות קדימה ולסגור בקו חזה, שליטה מלאה בכל הטווח."
+        },
+        {
+          name: "פרפר עם כבלים בישיבה",
+          muscle: "חזה אמצעי",
+          sets: 3, reps: "12–15",
+          description: "בידוד חזק, לשמור על מרפקים מעט כפופים, לעצור בשיא הכיווץ."
+        },
+        {
+          name: "לחיצת כתפיים עם דאמבלים",
+          muscle: "כתף קדמית + אמצעית",
+          sets: 3, reps: "8–10",
+          description: "ישיבה זקופה, דאמבלים בצד הראש, לדחוף למעלה בלי נעילה חדה."
+        },
+        {
+          name: "הרחקת כתפיים לצדדים",
+          muscle: "כתף אמצעית",
+          sets: 3, reps: "12–15",
+          description: "כמו ביום ראשון – דגש על רוחב כתף."
+        },
+        {
+          name: "פשיטת מרפקים מעל הראש עם דאמבל",
+          muscle: "יד אחורית – ראש ארוך",
+          sets: 3, reps: "10–12",
+          description: "כמו ביום ראשון – דגש על ראש ארוך של הטרייספס."
+        },
+        {
+          name: "פשיטת מרפקים בחבל בפולי עליון",
+          muscle: "יד אחורית – ראש צדדי",
+          sets: 3, reps: "12–15",
+          description: "כמו ביום ראשון – דגש על ראש צדדי והשלמת נפח."
+        }
+      ]
+    },
+    Thursday: {
+      title: "יום חמישי – גב + יד קדמית + אמות",
+      subtitle: "גב שני בשבוע + בייספס ואמות מחדש",
+      exercises: [
+        {
+          name: "מתח באחיזה רחבה",
+          muscle: "גב רחב",
+          sets: 4, reps: "6–8 / 8–10",
+          description: "כמו ביום שני – מדגיש רחב הגב."
+        },
+        {
+          name: "חתירה למוט T",
+          muscle: "גב אמצעי/עובי",
+          sets: 4, reps: "8–10",
+          description: "כמו ביום שני – עובי הגב."
+        },
+        {
+          name: "חתירה בישיבה בפולי תחתון",
+          muscle: "גב אמצעי",
+          sets: 3, reps: "10–12",
+          description: "חזרה על תבנית יציבה לעומס נוסף."
+        },
+        {
+          name: "פרפר הפוך",
+          muscle: "גב עליון + כתף אחורית",
+          sets: 3, reps: "12–15",
+          description: "דגש נוסף על יציבה וכתף אחורית."
+        },
+        {
+          name: "פשיטת גב בכיסא רומי",
+          muscle: "גב תחתון",
+          sets: 3, reps: "12–15",
+          description: "כמו ביום שני – חיזוק זוקפי גב."
+        },
+        {
+          name: "כפיפות מרפקים בעמידה",
+          muscle: "יד קדמית",
+          sets: 3, reps: "10–12",
+          description: "כמו ביום שני – המשך נפח לבייספס."
+        },
+        {
+          name: "כפיפות פטישים עם דאמבלים",
+          muscle: "יד קדמית",
+          sets: 3, reps: "12",
+          description: "כמו ביום שני – דגש על ברכיאליס ואמות."
+        },
+        {
+          name: "כפיפת שורש כף היד הפוכה",
+          muscle: "אמות",
+          sets: 3, reps: "12–15",
+          description: "כמו ביום שני – אחיזה חזקה."
+        }
+      ]
+    },
+    friday: {
+      title: "יום שישי – רגליים + ליבה",
+      subtitle: "רגליים שני – דגש נוסף על ישבן, אחורי הירך ותאומים",
+      exercises: [
+        {
+          name: "האקט סקוואט במכונה",
+          muscle: "קוואד + ישבן",
+          sets: 4, reps: "8–10",
+          description: "כמו ביום שלישי – דגש נוסף."
+        },
+        {
+          name: "לחיצת רגליים במכונה",
+          muscle: "כל הרגל",
+          sets: 4, reps: "10–12",
+          description: "כמו ביום שלישי – נפח נוסף."
+        },
+        {
+          name: "פשיטת ברכיים במכונה",
+          muscle: "קוואדריספס",
+          sets: 3, reps: "12–15",
+          description: "בידוד נוסף לקוואד."
+        },
+        {
+          name: "כפיפת ברכיים בעמידה/מכונה",
+          muscle: "אחורי הירך",
+          sets: 3, reps: "12–15",
+          description: "עוד נפח למסטרינג."
+        },
+        {
+          name: "דדליפט רומני (RDL)",
+          muscle: "ישבן + מסטרינג",
+          sets: 3, reps: "8–10",
+          description: "כמו ביום שלישי – תרגיל חובה."
+        },
+        {
+          name: "הרמת עקבים בלחיצת רגליים",
+          muscle: "תאומים עליון",
+          sets: 3, reps: "12–20",
+          description: "כמו ביום שלישי – נפח נוסף."
+        },
+        {
+          name: "הרמת עקבים בישיבה במכונה",
+          muscle: "תאומים תחתון",
+          sets: 3, reps: "12–20",
+          description: "כמו ביום שלישי – המשך עבודה."
+        },
+        {
+          name: "כפיפות בטן במכונה",
+          muscle: "ליבה",
+          sets: 3, reps: "15",
+          description: "כמו ביום שלישי – חיזוק בטן."
+        }
+      ]
+    }
+  };
+
+  const dayOrder = [
+    { key: "sunday", label: "ראשון" },
+    { key: "monday", label: "שני" },
+    { key: "tuesday", label: "שלישי" },
+    { key: "wednesday", label: "רביעי" },
+    { key: "Thursday", label: "חמישי" },
+    { key: "friday", label: "שישי" }
+  ];
+
+  // ===== DOM REFS =====
+  const pages = {
+    dashboard: document.getElementById("dashboard"),
+    workout: document.getElementById("workout"),
+    library: document.getElementById("library"),
+    history: document.getElementById("history"),
+    prs: document.getElementById("prs"),
+    ownerPanel: document.getElementById("ownerPanel"),
+    trainerPanel: document.getElementById("trainerPanel"),
+    settings: document.getElementById("settings")
+  };
+  const mainPageTitle = document.getElementById("mainPageTitle");
+  const mainPageSubtitle = document.getElementById("mainPageSubtitle");
+
+  const navItems = document.querySelectorAll(".nav-item");
+
+  const dayButtonsContainer = document.getElementById("dayButtons");
+  const dayTitleEl = document.getElementById("dayTitle");
+  const daySubtitleEl = document.getElementById("daySubtitle");
+  const exerciseTableBody = document.getElementById("exerciseTableBody");
+  const dateInput = document.getElementById("workoutDate");
+  const resetDayBtn = document.getElementById("resetDayBtn");
+  const goWorkoutModeBtn = document.getElementById("goWorkoutModeBtn");
+  const dayHistoryList = document.getElementById("dayHistoryList");
+  const exerciseSelect = document.getElementById("exerciseSelect");
+  const exportCsvBtn = document.getElementById("exportCsvBtn");
+  const historyContainer = document.getElementById("historyContainer");
+  const prGrid = document.getElementById("prGrid");
+  const ownerUsersTableContainer = document.getElementById("ownerUsersTableContainer");
+  const ownerRefreshUsersBtn = document.getElementById("ownerRefreshUsersBtn");
+  const ownerCreateUserBtn = document.getElementById("ownerCreateUserBtn");
+  const trainerTraineesContainer = document.getElementById("trainerTraineesContainer");
+
+  let currentUserRole = "trainee";
+  let currentUserEmail = "";
+  let ownerUsersCache = [];
+
+  function applyRoleToUI() {
+    const ownerNav = document.querySelector(".nav-owner-only");
+    const trainerNav = document.querySelector(".nav-trainer-only");
+    const roleBadge = document.getElementById("roleBadge");
+    const ownerEmailLabel = document.getElementById("ownerEmailLabel");
+    const ownerRoleLabel = document.getElementById("ownerRoleLabel");
+
+    let roleLabel = "מתאמן";
+    if (currentUserRole === "owner") roleLabel = "בעלים";
+    else if (currentUserRole === "trainer") roleLabel = "מאמן";
+
+    if (ownerNav) {
+      ownerNav.style.display = currentUserRole === "owner" ? "flex" : "none";
+    }
+    if (trainerNav) {
+      trainerNav.style.display = currentUserRole === "trainer" ? "flex" : "none";
+    }
+    if (roleBadge) {
+      roleBadge.textContent = "מחובר כ: " + roleLabel + (currentUserEmail ? " (" + currentUserEmail + ")" : "");
+    }
+    if (ownerEmailLabel) ownerEmailLabel.textContent = currentUserEmail || "-";
+    if (ownerRoleLabel) ownerRoleLabel.textContent = roleLabel;
+  }
+
+  // workout mode
+  const workoutDaySelect = document.getElementById("workoutDaySelect");
+  const workoutModeDate = document.getElementById("workoutModeDate");
+  const workoutExName = document.getElementById("workoutExName");
+  const workoutExMuscle = document.getElementById("workoutExMuscle");
+  const workoutSetsRepsTag = document.getElementById("workoutSetsRepsTag");
+  const workoutIndexTag = document.getElementById("workoutIndexTag");
+  const currentSetLabel = document.getElementById("currentSetLabel");
+  const finishSetBtn = document.getElementById("finishSetBtn");
+  const nextExerciseBtn = document.getElementById("nextExerciseBtn");
+  const workoutWeightInput = document.getElementById("workoutWeightInput");
+  const saveWorkoutWeightBtn = document.getElementById("saveWorkoutWeightBtn");
+  const restSelect = document.getElementById("restSelect");
+  const startRestBtn = document.getElementById("startRestBtn");
+  const restTimerDisplay = document.getElementById("restTimerDisplay");
+  const workoutExerciseList = document.getElementById("workoutExerciseList");
+  // ===== PROGRESS GRAPH RESET =====
+  function resetSelectedGraphHistory() {
+    try {
+      const dayData = program[currentDayKey];
+      if (!dayData) return;
+      const key = historyKey(currentDayKey, currentChartExerciseIndex);
+      localStorage.removeItem(key);
+      renderDayHistory(currentDayKey);
+      renderHistoryPage();
+      renderPRs();
+      if (typeof updateChart === "function") {
+        updateChart();
+      }
+    } catch (err) {
+      console.error("resetSelectedGraphHistory error", err);
+    }
+  }
+
+  function resetAllGraphsHistory() {
+    if (!confirm("לאפס את כל היסטוריית הגרפים (כל התרגילים, כל הימים)?")) return;
+    try {
+      dayOrder.forEach(d => {
+        const dayData = program[d.key];
+        if (!dayData || !Array.isArray(dayData.exercises)) return;
+        dayData.exercises.forEach((_, idx) => {
+          const key = historyKey(d.key, idx);
+          localStorage.removeItem(key);
+        });
+      });
+      renderDayHistory(currentDayKey);
+      renderHistoryPage();
+      renderPRs();
+      if (typeof updateChart === "function") {
+        updateChart();
+      }
+    } catch (err) {
+      console.error("resetAllGraphsHistory error", err);
+    }
+  }
+
+  const resetSelectedGraphBtn = document.getElementById("resetSelectedGraphBtn");
+  const resetAllGraphsBtn = document.getElementById("resetAllGraphsBtn");
+  if (resetSelectedGraphBtn) {
+    resetSelectedGraphBtn.addEventListener("click", resetSelectedGraphHistory);
+  }
+  if (resetAllGraphsBtn) {
+    resetAllGraphsBtn.addEventListener("click", resetAllGraphsHistory);
+  }
+
+
+  // settings
+  const defaultRestSelect = document.getElementById("defaultRestSelect");
+  const resetAllDataBtn = document.getElementById("resetAllDataBtn");
+
+  const exerciseLibraryGrid = document.getElementById("exerciseLibraryGrid");
+
+  let currentDayKey = "sunday";
+  let chart;
+  let currentChartExerciseIndex = 0;
+  let restTimerId = null;
+  let restRemaining = 0;
+  let workoutCurrentExerciseIndex = 0;
+  let workoutCurrentSet = 1;
+
+  // ===== HELPERS: STORAGE KEYS =====
+  function storageKey(dayKey, index, field) {
+    return `training_${dayKey}_ex${index}_${field}`;
+  }
+
+  function dateStorageKey(dayKey) {
+    return `training_${dayKey}_date`;
+  }
+
+  function historyKey(dayKey, index) {
+    return `training_history_${dayKey}_ex${index}`;
+  }
+
+  function defaultRestKey() {
+    return `training_default_rest`;
+  }
+
+  function loadHistory(dayKey, index) {
+    try {
+      const raw = localStorage.getItem(historyKey(dayKey, index));
+      if (!raw) return [];
+      const arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return [];
+      return arr;
+    } catch {
+      return [];
+    }
+  }
+
+  function saveHistory(dayKey, index, history) {
+    localStorage.setItem(historyKey(dayKey, index), JSON.stringify(history));
+  }
+
+  function addHistoryEntry(dayKey, index, dateStr, weightStr) {
+    if (!dateStr || !weightStr) return;
+    const weight = parseFloat(weightStr);
+    if (isNaN(weight) || weight <= 0) return;
+    const history = loadHistory(dayKey, index);
+    const last = history[history.length - 1];
+    if (last && last.date === dateStr && parseFloat(last.weight) === weight) return;
+    const now = new Date();
+    history.push({ date: dateStr, weight, ts: now.toISOString() });
+    if (history.length > 60) history.shift();
+    saveHistory(dayKey, index, history);
+  }
+
+  // ===== RENDER DAY (DASHBOARD) =====
+  function renderDay(dayKey) {
+    currentDayKey = dayKey;
+    const dayData = program[dayKey];
+    if (!dayData) return;
+
+    dayTitleEl.textContent = dayData.title;
+    daySubtitleEl.textContent = dayData.subtitle || "";
+
+    Array.from(dayButtonsContainer.children).forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.dayKey === dayKey);
+    });
+
+    const savedDate = localStorage.getItem(dateStorageKey(dayKey));
+    dateInput.value = savedDate || "";
+
+    exerciseTableBody.innerHTML = "";
+
+    dayData.exercises.forEach((ex, index) => {
+      const tr = document.createElement("tr");
+
+      const tdName = document.createElement("td");
+      tdName.className = "name-col";
+      tdName.textContent = ex.name;
+      tr.appendChild(tdName);
+
+      const tdSetsReps = document.createElement("td");
+      tdSetsReps.textContent = `${ex.sets} × ${ex.reps}`;
+      tr.appendChild(tdSetsReps);
+
+      const tdMuscle = document.createElement("td");
+      tdMuscle.className = "muscle-col";
+      const badge = document.createElement("span");
+      badge.className = "badge-muscle";
+      const dot = document.createElement("span");
+      dot.className = "dot";
+      const text = document.createTextNode(ex.muscle);
+      badge.appendChild(dot);
+      badge.appendChild(text);
+      tdMuscle.appendChild(badge);
+      tr.appendChild(tdMuscle);
+
+      const tdSetsDone = document.createElement("td");
+      const setsWrapper = document.createElement("div");
+      setsWrapper.className = "sets-dots";
+      const storedSets = parseInt(localStorage.getItem(storageKey(dayKey, index, "setsDone")) || "0", 10);
+      for (let s = 1; s <= ex.sets; s++) {
+        const dotEl = document.createElement("button");
+        dotEl.type = "button";
+        dotEl.className = "set-dot" + (s <= storedSets ? " active" : "");
+        dotEl.addEventListener("click", () => {
+          const current = parseInt(localStorage.getItem(storageKey(dayKey, index, "setsDone")) || "0", 10);
+          let newVal = s;
+          if (current === s) {
+            newVal = s - 1;
+          }
+          localStorage.setItem(storageKey(dayKey, index, "setsDone"), newVal.toString());
+          renderDay(dayKey);
+        });
+        setsWrapper.appendChild(dotEl);
+      }
+      tdSetsDone.appendChild(setsWrapper);
+      tr.appendChild(tdSetsDone);
+
+      const tdWeight = document.createElement("td");
+      const weightInput = document.createElement("input");
+      weightInput.type = "number";
+      weightInput.step = "0.5";
+      weightInput.placeholder = "משקל";
+      weightInput.value = localStorage.getItem(storageKey(dayKey, index, "weight")) || "";
+      weightInput.addEventListener("input", () => {
+        localStorage.setItem(storageKey(dayKey, index, "weight"), weightInput.value);
+        if (dateInput.value) {
+          addHistoryEntry(dayKey, index, dateInput.value, weightInput.value);
+          renderDayHistory(dayKey);
+          updateChart();
+          renderPRs();
+          renderHistoryPage();
+        }
+      });
+      tdWeight.appendChild(weightInput);
+      tr.appendChild(tdWeight);
+
+      const tdNotes = document.createElement("td");
+      const notesInput = document.createElement("input");
+      notesInput.type = "text";
+      notesInput.placeholder = "הערה (סטים, קושי, RIR...)";
+      notesInput.value = localStorage.getItem(storageKey(dayKey, index, "notes")) || "";
+      notesInput.addEventListener("input", () => {
+        localStorage.setItem(storageKey(dayKey, index, "notes"), notesInput.value);
+      });
+      tdNotes.appendChild(notesInput);
+      tr.appendChild(tdNotes);
+
+      exerciseTableBody.appendChild(tr);
+    });
+
+    populateExerciseSelect();
+    renderDayHistory(dayKey);
+    updateChart();
+    populateWorkoutDaySelect();
+    populateWorkoutExerciseList();
+    renderPRs();
+    renderHistoryPage();
+  }
+
+  function renderDayHistory(dayKey) {
+    dayHistoryList.innerHTML = "";
+    const dayData = program[dayKey];
+    if (!dayData) return;
+    const items = [];
+    dayData.exercises.forEach((ex, index) => {
+      const history = loadHistory(dayKey, index);
+      history.forEach(h => {
+        items.push({
+          exName: ex.name,
+          date: h.date,
+          weight: h.weight,
+          ts: h.ts || h.date
+        });
+      });
+    });
+    items.sort((a, b) => (a.ts || "").localeCompare(b.ts || ""));
+    const lastTen = items.slice(-10);
+    lastTen.reverse();
+    lastTen.forEach(item => {
+      const li = document.createElement("li");
+      li.className = "history-item";
+      const labelSpan = document.createElement("span");
+      labelSpan.className = "label";
+      labelSpan.textContent = `${item.exName}`;
+      const metaSpan = document.createElement("span");
+      metaSpan.className = "meta";
+      metaSpan.textContent = `${item.date} • ${item.weight} ק״ג`;
+      li.appendChild(labelSpan);
+      li.appendChild(metaSpan);
+      dayHistoryList.appendChild(li);
+    });
+    if (lastTen.length === 0) {
+      const li = document.createElement("li");
+      li.className = "history-item";
+      li.innerHTML = `<span class="label">אין היסטוריה ליום הזה עדיין</span><span class="meta">תתחיל להזין משקלים</span>`;
+      dayHistoryList.appendChild(li);
+    }
+  }
+
+  function populateExerciseSelect() {
+    const dayData = program[currentDayKey];
+    exerciseSelect.innerHTML = "";
+    dayData.exercises.forEach((ex, index) => {
+      const opt = document.createElement("option");
+      opt.value = index;
+      opt.textContent = ex.name;
+      exerciseSelect.appendChild(opt);
+    });
+    currentChartExerciseIndex = 0;
+    exerciseSelect.value = "0";
+  }
+
+  function updateChart() {
+    const dayData = program[currentDayKey];
+    if (!dayData) return;
+    const ex = dayData.exercises[currentChartExerciseIndex];
+    const history = loadHistory(currentDayKey, currentChartExerciseIndex);
+
+    const labels = history.map((h, i) => h.date || `אימון ${i + 1}`);
+    const values = history.map(h => h.weight);
+
+    const ctx = document.getElementById("progressChart").getContext("2d");
+
+    if (chart) {
+      chart.destroy();
+    }
+
+    chart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: ex.name,
+          data: values,
+          tension: 0.3,
+          fill: true,
+          borderColor: "#f97316",
+          backgroundColor: "rgba(249,115,22,0.22)",
+          pointRadius: 3,
+          pointBackgroundColor: "#fed7aa"
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            labels: {
+              font: { size: 11 },
+              color: "#e5e7eb"
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: "#9ca3af", font: { size: 10 } },
+            grid: { color: "rgba(55,65,81,0.4)" }
+          },
+          y: {
+            ticks: { color: "#9ca3af", font: { size: 10 } },
+            grid: { color: "rgba(55,65,81,0.4)" }
+          }
+        }
+      }
+    });
+  }
+  // ===== OWNER PANEL LOGIC =====
+  async function ownerLoadUsers() {
+    try {
+      if (currentUserRole !== "owner") {
+        if (ownerUsersTableContainer) {
+          ownerUsersTableContainer.innerHTML = "<p class='small-note'>רק בעלים יכול לראות את רשימת המשתמשים.</p>";
+        }
+        return;
+      }
+      if (!window.db) {
+        if (ownerUsersTableContainer) {
+          ownerUsersTableContainer.innerHTML = "<p class='small-note'>החיבור לענן (Firestore) לא זמין כרגע.</p>";
+        }
+        return;
+      }
+      const snap = await db.collection("users").orderBy("createdAt", "asc").get();
+      ownerUsersCache = [];
+      snap.forEach(doc => {
+        const d = doc.data() || {};
+        ownerUsersCache.push({
+          uid: doc.id,
+          email: d.email || "",
+          role: d.role || "trainee",
+          trainees: Array.isArray(d.trainees) ? d.trainees : [],
+          trainerUid: d.trainerUid || null,
+          createdAt: d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toISOString().slice(0, 10) : ""
+        });
+      });
+      renderOwnerUsersTable();
+    } catch (err) {
+      console.error("ownerLoadUsers error", err);
+      if (ownerUsersTableContainer) {
+        ownerUsersTableContainer.innerHTML = "<p class='small-note'>שגיאה בטעינת המשתמשים.</p>";
+      }
+    }
+  }
+
+  function renderOwnerUsersTable() {
+    if (!ownerUsersTableContainer) return;
+    if (!ownerUsersCache.length) {
+      ownerUsersTableContainer.innerHTML = "<p class='small-note'>לא נמצאו משתמשים.</p>";
+      return;
+    }
+    let htmlTable = "<table class='simple-table'><thead><tr>"
+      + "<th>אימייל</th>"
+      + "<th>תפקיד</th>"
+      + "<th>מס' מתאמנים</th>"
+      + "<th>תאריך הצטרפות</th>"
+      + "<th>פעולות</th>"
+      + "</tr></thead><tbody>";
+
+    ownerUsersCache.forEach(u => {
+      const traineesCount = (u.trainees && u.trainees.length) || 0;
+      htmlTable += "<tr>"
+        + "<td>" + (u.email || "-") + "</td>"
+        + "<td>"
+        + "<select class='owner-role-select' data-uid='" + u.uid + "'>"
+        + "<option value='trainee'" + (u.role === "trainee" ? " selected" : "") + ">מתאמן</option>"
+        + "<option value='trainer'" + (u.role === "trainer" ? " selected" : "") + ">מאמן</option>"
+        + "<option value='owner'" + (u.role === "owner" ? " selected" : "") + ">בעלים</option>"
+        + "</select>"
+        + "</td>"
+        + "<td>" + traineesCount + "</td>"
+        + "<td>" + (u.createdAt || "-") + "</td>"
+        + "<td>"
+        + "<button class='btn ghost owner-trainees-btn' data-uid='" + u.uid + "' data-email='" + (u.email || "") + "'>ניהול מתאמנים</button>"
+        + "<button class='btn ghost owner-reset-btn' data-uid='" + u.uid + "' data-email='" + (u.email || "") + "'>איפוס נתונים</button>"
+        + "<button class='btn danger owner-delete-btn' data-uid='" + u.uid + "' data-email='" + (u.email || "") + "'>מחיקה</button>"
+        + "</td>"
+        + "</tr>";
+    });
+
+    htmlTable += "</tbody></table>";
+    ownerUsersTableContainer.innerHTML = htmlTable;
+
+    document.querySelectorAll(".owner-role-select").forEach(sel => {
+      sel.addEventListener("change", async (e) => {
+        const uid = e.target.getAttribute("data-uid");
+        const newRole = e.target.value;
+        await ownerUpdateUserRole(uid, newRole);
+      });
+    });
+    document.querySelectorAll(".owner-reset-btn").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        const uid = e.target.getAttribute("data-uid");
+        const email = e.target.getAttribute("data-email") || "";
+        await ownerResetUserData(uid, email);
+      });
+    });
+    document.querySelectorAll(".owner-delete-btn").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        const uid = e.target.getAttribute("data-uid");
+        const email = e.target.getAttribute("data-email") || "";
+        await ownerDeleteUser(uid, email);
+      });
+    });
+    document.querySelectorAll(".owner-trainees-btn").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        const uid = e.target.getAttribute("data-uid");
+        const email = e.target.getAttribute("data-email") || "";
+        await ownerManageTrainees(uid, email);
+      });
+    });
+  }
+
+  async function ownerLogAction(action, targetUid, details) {
+    try {
+      if (!window.db) return;
+      await db.collection("logs_adminActions").add({
+        actorUid: window.currentUid || null,
+        action: action,
+        targetUid: targetUid || null,
+        details: details || null,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } catch (err) {
+      console.error("ownerLogAction error", err);
+    }
+  }
+
+  async function ownerUpdateUserRole(uid, newRole) {
+    if (!window.db) return;
+    try {
+      await db.collection("users").doc(uid).set(
+        {
+          role: newRole,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        },
+        { merge: true }
+      );
+      await ownerLogAction("change_role", uid, { role: newRole });
+      const found = ownerUsersCache.find(u => u.uid === uid);
+      if (found) found.role = newRole;
+      if (window.currentUid === uid) {
+        currentUserRole = newRole;
+        applyRoleToUI();
+      }
+      renderOwnerUsersTable();
+    } catch (err) {
+      console.error("ownerUpdateUserRole error", err);
+      alert("שגיאה בעדכון התפקיד.");
+    }
+  }
+
+  async function ownerResetUserData(uid, email) {
+    if (!window.db) return;
+    if (!confirm("לאפס את כל הנתונים של המשתמש " + (email || uid) + "?")) return;
+    try {
+      await db.collection("training_states").doc(uid).set(
+        {
+          storage: {},
+          resetAt: firebase.firestore.FieldValue.serverTimestamp(),
+          resetBy: window.currentUid || null
+        },
+        { merge: true }
+      );
+      await ownerLogAction("reset_user", uid, { email });
+      alert("הנתונים אופסו למשתמש.");
+    } catch (err) {
+      console.error("ownerResetUserData error", err);
+      alert("שגיאה באיפוס הנתונים.");
+    }
+  }
+
+  async function ownerDeleteUser(uid, email) {
+    if (!window.db) return;
+    if (!confirm("למחוק את המשתמש " + (email || uid) + " מהמערכת (ענן בלבד)?")) return;
+    try {
+      await db.collection("training_states").doc(uid).delete().catch(() => {});
+      await db.collection("users").doc(uid).delete().catch(() => {});
+      await ownerLogAction("delete_user", uid, { email });
+      ownerUsersCache = ownerUsersCache.filter(u => u.uid !== uid);
+      renderOwnerUsersTable();
+      alert("המשתמש נמחק מהענן.");
+    } catch (err) {
+      console.error("ownerDeleteUser error", err);
+      alert("שגיאה במחיקת המשתמש.");
+    }
+  }
+
+  async function ownerManageTrainees(uid, email) {
+    if (!window.db) return;
+    const input = prompt("הכנס אימיילים של מתאמנים (מופרדים בפסיקים) עבור המאמן " + (email || uid));
+    if (!input) return;
+    const emails = input.split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
+    if (!emails.length) return;
+
+    try {
+      const trainees = ownerUsersCache.filter(u => u.email && emails.includes(u.email.toLowerCase()));
+      const traineeUids = trainees.map(t => t.uid);
+      await db.collection("users").doc(uid).set(
+        {
+          trainees: traineeUids,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        },
+        { merge: true }
+      );
+      const batch = db.batch();
+      trainees.forEach(t => {
+        const ref = db.collection("users").doc(t.uid);
+        batch.set(ref, { trainerUid: uid }, { merge: true });
+      });
+      await batch.commit();
+      await ownerLogAction("assign_trainees", uid, { traineeUids, emails });
+      const found = ownerUsersCache.find(u => u.uid === uid);
+      if (found) found.trainees = traineeUids;
+      renderOwnerUsersTable();
+      alert("המתאמנים שויכו למאמן.");
+    } catch (err) {
+      console.error("ownerManageTrainees error", err);
+      alert("שגיאה בשיוך המתאמנים.");
+    }
+  }
+
+  async function ownerCreateUserFlow() {
+    if (!window.db || !window.firebase) {
+      alert("פונקציית יצירת משתמש דורשת Firebase פעיל.");
+      return;
+    }
+    const email = prompt("אימייל למשתמש החדש:");
+    if (!email) return;
+    const role = prompt("תפקיד למשתמש (owner/trainer/trainee):", "trainee") || "trainee";
+
+    try {
+      await db.collection("users").add({
+        email,
+        role,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      await ownerLogAction("create_user", null, { email, role });
+      alert("המשתמש נוסף לרשימת users. ודא שקיים גם ב-Auth.");
+      ownerLoadUsers();
+    } catch (err) {
+      console.error("ownerCreateUserFlow error", err);
+      alert("שגיאה ביצירת המשתמש.");
+    }
+  }
+
+  if (ownerRefreshUsersBtn) {
+    ownerRefreshUsersBtn.addEventListener("click", ownerLoadUsers);
+  }
+  if (ownerCreateUserBtn) {
+    ownerCreateUserBtn.addEventListener("click", ownerCreateUserFlow);
+  }
+
+
+
+  // ===== TRAINER PANEL LOGIC =====
+  async function loadTrainerTrainees() {
+    const container = document.getElementById("trainerTraineesContainer");
+    if (!container) return;
+
+    if (currentUserRole !== "trainer") {
+      container.innerHTML = "<p class='small-note'>רק מאמן יכול לראות כאן את רשימת המתאמנים שלו.</p>";
+      return;
+    }
+    if (!window.db || !window.currentUid) {
+      container.innerHTML = "<p class='small-note'>החיבור לענן לא זמין כרגע.</p>";
+      return;
+    }
+
+    try {
+      container.innerHTML = "<p class='small-note'>טוען מתאמנים...</p>";
+      const snap = await db.collection("users").where("trainerUid", "==", window.currentUid).get();
+      if (snap.empty) {
+        container.innerHTML = "<p class='small-note'>לא נמצאו מתאמנים המשויכים אליך כרגע.</p>";
+        return;
+      }
+
+      const trainees = [];
+      snap.forEach(doc => {
+        const d = doc.data() || {};
+        trainees.push({
+          uid: doc.id,
+          email: d.email || "",
+          role: d.role || "trainee"
+        });
+      });
+
+      let html = "<table class='simple-table'><thead><tr>"
+        + "<th>אימייל</th>"
+        + "<th>תפקיד</th>"
+        + "<th>פעולות</th>"
+        + "</tr></thead><tbody>";
+
+      trainees.forEach(t => {
+        const roleLabel = t.role === "trainer" ? "מאמן" : (t.role === "owner" ? "בעלים" : "מתאמן");
+        html += "<tr>"
+          + "<td>" + (t.email || "-") + "</td>"
+          + "<td>" + roleLabel + "</td>"
+          + "<td>"
+          + "<button class='btn btn-ghost trainer-view-btn' data-uid='" + t.uid + "' data-email='" + (t.email || "") + "'>צפה בנתונים</button>"
+          + "</td>"
+          + "</tr>";
+      });
+
+      html += "</tbody></table>";
+      container.innerHTML = html;
+
+      document.querySelectorAll(".trainer-view-btn").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+          const uid = e.currentTarget.getAttribute("data-uid");
+          const email = e.currentTarget.getAttribute("data-email") || "";
+          await trainerViewTraineeData(uid, email);
+        });
+      });
+    } catch (err) {
+      console.error("loadTrainerTrainees error", err);
+      container.innerHTML = "<p class='small-note'>שגיאה בטעינת רשימת המתאמנים.</p>";
+    }
+  }
+
+  async function trainerViewTraineeData(uid, email) {
+    const detailsContainer = document.getElementById("trainerTraineeDetailsContainer");
+    const pre = document.getElementById("trainerTraineeDetailsPre");
+    const closeBtn = document.getElementById("trainerCloseDetailsBtn");
+    if (!detailsContainer || !pre) return;
+
+    if (!window.db) {
+      alert("החיבור לענן לא זמין כרגע.");
+      return;
+    }
+
+    try {
+      const ref = db.collection("training_states").doc(uid);
+      const snap = await ref.get();
+      if (!snap.exists) {
+        pre.textContent = "לא נמצאו נתונים למשתמש זה.";
+      } else {
+        const data = snap.data() || {};
+        pre.textContent = JSON.stringify(data.storage || data, null, 2);
+      }
+      detailsContainer.style.display = "block";
+      if (closeBtn) {
+        closeBtn.onclick = () => {
+          detailsContainer.style.display = "none";
+        };
+      }
+    } catch (err) {
+      console.error("trainerViewTraineeData error", err);
+      alert("שגיאה בטעינת הנתונים של המתאמן.");
+    }
+  }
+
+  // ===== WORKOUT MODE =====
+  function populateWorkoutDaySelect() {
+    workoutDaySelect.innerHTML = "";
+    dayOrder.forEach(d => {
+      const opt = document.createElement("option");
+      opt.value = d.key;
+      opt.textContent = d.label;
+      workoutDaySelect.appendChild(opt);
+    });
+    workoutDaySelect.value = currentDayKey;
+  }
+
+  function populateWorkoutExerciseList() {
+    const dayKey = workoutDaySelect.value || currentDayKey;
+    const dayData = program[dayKey];
+    workoutExerciseList.innerHTML = "";
+    if (!dayData) return;
+    dayData.exercises.forEach((ex, index) => {
+      const li = document.createElement("li");
+      li.className = "workout-list-item" + (index === workoutCurrentExerciseIndex ? " active" : "");
+      const left = document.createElement("span");
+      left.textContent = ex.name;
+      const right = document.createElement("span");
+      right.textContent = `${ex.sets} × ${ex.reps}`;
+      li.appendChild(left);
+      li.appendChild(right);
+      li.addEventListener("click", () => {
+        workoutCurrentExerciseIndex = index;
+        workoutCurrentSet = 1;
+        renderWorkoutCurrent();
+      });
+      workoutExerciseList.appendChild(li);
+    });
+  }
+
+  function renderWorkoutCurrent() {
+    const dayKey = workoutDaySelect.value || currentDayKey;
+    const dayData = program[dayKey];
+    if (!dayData) return;
+    const ex = dayData.exercises[workoutCurrentExerciseIndex];
+    if (!ex) return;
+
+    workoutExName.textContent = ex.name;
+    workoutExMuscle.textContent = ex.muscle;
+    workoutSetsRepsTag.textContent = `${ex.sets} × ${ex.reps}`;
+    workoutIndexTag.textContent = `תרגיל ${workoutCurrentExerciseIndex + 1} מתוך ${dayData.exercises.length}`;
+    currentSetLabel.textContent = workoutCurrentSet.toString();
+
+    const storedWeight = localStorage.getItem(storageKey(dayKey, workoutCurrentExerciseIndex, "weight"));
+    workoutWeightInput.value = storedWeight || "";
+
+    Array.from(workoutExerciseList.children).forEach((li, idx) => {
+      li.classList.toggle("active", idx === workoutCurrentExerciseIndex);
+    });
+
+    const savedDate = localStorage.getItem(dateStorageKey(dayKey));
+    if (savedDate) {
+      workoutModeDate.value = savedDate;
+    }
+  }
+
+  function startRestTimer(seconds) {
+    if (restTimerId) {
+      clearInterval(restTimerId);
+      restTimerId = null;
+    }
+    restRemaining = seconds;
+    updateRestDisplay();
+    restTimerId = setInterval(() => {
+      restRemaining--;
+      if (restRemaining <= 0) {
+        clearInterval(restTimerId);
+        restTimerId = null;
+        restRemaining = 0;
+      }
+      updateRestDisplay();
+    }, 1000);
+  }
+
+  function updateRestDisplay() {
+    const m = Math.floor(restRemaining / 60);
+    const s = restRemaining % 60;
+    const mm = m.toString().padStart(2, "0");
+    const ss = s.toString().padStart(2, "0");
+    restTimerDisplay.textContent = `${mm}:${ss}`;
+  }
+
+  // ===== EXERCISE LIBRARY =====
+  function renderExerciseLibrary() {
+    exerciseLibraryGrid.innerHTML = "";
+    dayOrder.forEach(d => {
+      const dayData = program[d.key];
+      if (!dayData) return;
+      dayData.exercises.forEach(ex => {
+        const card = document.createElement("div");
+        card.className = "exercise-card";
+        const h4 = document.createElement("h4");
+        h4.textContent = ex.name;
+        const muscle = document.createElement("div");
+        muscle.className = "muscle";
+        muscle.textContent = ex.muscle;
+        const p = document.createElement("p");
+        p.textContent = ex.description || "";
+        card.appendChild(h4);
+        card.appendChild(muscle);
+        card.appendChild(p);
+        exerciseLibraryGrid.appendChild(card);
+      });
+    });
+  }
+
+  // ===== HISTORY PAGE =====
+  function renderHistoryPage() {
+    historyContainer.innerHTML = "";
+    const allEntries = [];
+    dayOrder.forEach(d => {
+      const dayKey = d.key;
+      const dayData = program[dayKey];
+      if (!dayData) return;
+      dayData.exercises.forEach((ex, index) => {
+        const history = loadHistory(dayKey, index);
+        history.forEach(h => {
+          allEntries.push({
+            dayKey,
+            dayLabel: d.label,
+            exName: ex.name,
+            date: h.date,
+            weight: h.weight,
+            ts: h.ts || (h.date + "T00:00:00")
+          });
+        });
+      });
+    });
+    if (allEntries.length === 0) {
+      const p = document.createElement("p");
+      p.className = "small-note";
+      p.textContent = "אין עדיין היסטוריית אימונים. מלא משקלים בדשבורד ותתחיל לבנות יומן.";
+      historyContainer.appendChild(p);
+      return;
+    }
+
+    allEntries.sort((a, b) => (a.ts || "").localeCompare(b.ts || ""));
+    const groups = {};
+    allEntries.forEach(e => {
+      const key = `${e.date}__${e.dayLabel}`;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(e);
+    });
+
+    Object.keys(groups).forEach(groupKey => {
+      const [date, dayLabel] = groupKey.split("__");
+      const div = document.createElement("div");
+      div.className = "history-group";
+      const title = document.createElement("div");
+      title.className = "history-group-title";
+      title.textContent = `${date} – יום ${dayLabel}`;
+      div.appendChild(title);
+      const ul = document.createElement("ul");
+      ul.className = "history-group-list";
+      groups[groupKey].forEach(e => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span>${e.exName}</span><span>${e.weight} ק״ג</span>`;
+        ul.appendChild(li);
+      });
+      div.appendChild(ul);
+      historyContainer.appendChild(div);
+    });
+  }
+
+  // ===== PR PAGE =====
+  function renderPRs() {
+    prGrid.innerHTML = "";
+    dayOrder.forEach(d => {
+      const dayKey = d.key;
+      const dayData = program[dayKey];
+      if (!dayData) return;
+      dayData.exercises.forEach((ex, index) => {
+        const history = loadHistory(dayKey, index);
+        if (!history.length) return;
+        let maxEntry = history[0];
+        history.forEach(h => {
+          if (parseFloat(h.weight) > parseFloat(maxEntry.weight)) {
+            maxEntry = h;
+          }
+        });
+        const card = document.createElement("div");
+        card.className = "pr-card";
+        const h4 = document.createElement("h4");
+        h4.textContent = ex.name;
+        const val = document.createElement("div");
+        val.className = "pr-value";
+        val.textContent = `${maxEntry.weight} ק״ג`;
+        const meta = document.createElement("div");
+        meta.className = "pr-meta";
+        meta.textContent = `שיא ביום ${maxEntry.date} • יום ${d.label}`;
+        card.appendChild(h4);
+        card.appendChild(val);
+        card.appendChild(meta);
+        prGrid.appendChild(card);
+      });
+    });
+    if (!prGrid.children.length) {
+      const p = document.createElement("p");
+      p.className = "small-note";
+      p.textContent = "אין עדיין שיאים, צריך להזין מספר אימונים עם משקלים כדי לחשב PR.";
+      prGrid.appendChild(p);
+    }
+  }
+
+  // ===== EXPORT CSV =====
+  function exportHistoryToCsv() {
+    const rows = [["day_key", "day_label", "date", "exercise", "weight", "timestamp"]];
+    dayOrder.forEach(d => {
+      const dayKey = d.key;
+      const dayData = program[dayKey];
+      if (!dayData) return;
+      dayData.exercises.forEach((ex, index) => {
+        const history = loadHistory(dayKey, index);
+        history.forEach(h => {
+          rows.push([
+            dayKey,
+            d.label,
+            h.date,
+            ex.name,
+            h.weight,
+            h.ts || ""
+          ]);
+        });
+      });
+    });
+    if (rows.length === 1) {
+      alert("אין נתוני היסטוריה לייצא.");
+      return;
+    }
+    let csv = "";
+    rows.forEach(r => {
+      csv += r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",") + "\n";
+    });
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "training-history.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // ===== SETTINGS =====
+  function loadDefaultRest() {
+    const val = localStorage.getItem(defaultRestKey());
+    const useVal = val || "90";
+    defaultRestSelect.value = useVal;
+    restSelect.value = useVal;
+  }
+
+  function saveDefaultRest() {
+    const val = defaultRestSelect.value || "90";
+    localStorage.setItem(defaultRestKey(), val);
+    restSelect.value = val;
+  }
+
+  function resetAllData() {
+    if (!confirm("למחוק את כל הנתונים (משקלים, הערות, היסטוריה, שיאים) מהמכשיר הזה?")) return;
+    Object.keys(localStorage)
+      .filter(k => k.startsWith("training_"))
+      .forEach(k => localStorage.removeItem(k));
+    renderDay(currentDayKey);
+    renderHistoryPage();
+    renderPRs();
+    alert("כל הנתונים נמחקו מהמכשיר הזה. אפשר להתחיל מאפס.");
+  }
+
+  // ===== NAVIGATION =====
+  function setActivePage(pageKey) {
+    Object.keys(pages).forEach(key => {
+      pages[key].classList.toggle("active", key === pageKey);
+    });
+    navItems.forEach(item => {
+      item.classList.toggle("active", item.dataset.page === pageKey);
+    });
+    switch (pageKey) {
+      case "dashboard":
+        mainPageTitle.textContent = "דשבורד אימונים שבועי";
+        mainPageSubtitle.textContent = "מעקב משקלים, סטים והתקדמות לאורך זמן.";
+        break;
+      case "workout":
+        mainPageTitle.textContent = "מצב אימון – ביצוע סטים בזמן אמת";
+        mainPageSubtitle.textContent = "התמקדות בתרגיל אחד, סטים, טיימר מנוחה ומעבר אוטומטי.";
+        break;
+      case "library":
+        mainPageTitle.textContent = "ספריית תרגילים מלאה";
+        mainPageSubtitle.textContent = "הבנה מה עושה כל תרגיל ואיך לבצע נכון.";
+        renderExerciseLibrary();
+        break;
+      case "history":
+        mainPageTitle.textContent = "יומן אימונים";
+        mainPageSubtitle.textContent = "כל האימונים, כל התאריכים, הכל במקום אחד.";
+        renderHistoryPage();
+        break;
+      case "prs":
+        mainPageTitle.textContent = "שיאים אישיים (PRs)";
+        mainPageSubtitle.textContent = "משקלים הכי חזקים שהרמת בכל תרגיל.";
+        renderPRs();
+        break;
+      case "ownerPanel":
+        mainPageTitle.textContent = "פאנל בעלים";
+        mainPageSubtitle.textContent = "ניהול משתמשים, תפקידים ונתונים מהענן.";
+        break;
+      case "trainerPanel":
+        mainPageTitle.textContent = "פאנל מאמן";
+        mainPageSubtitle.textContent = "צפייה במתאמנים המשויכים אליך.";
+        if (typeof loadTrainerTrainees === "function") {
+          loadTrainerTrainees();
+        }
+        break;
+      case "settings":
+        mainPageTitle.textContent = "הגדרות אפליקציה";
+        mainPageSubtitle.textContent = "שליטה על מנוחה, איפוסים והעדפות.";
+        break;
+    }
+  }
+
+  // ===== INIT =====
+  // nav
+  navItems.forEach(item => {
+    item.addEventListener("click", () => {
+      const pageKey = item.dataset.page;
+      setActivePage(pageKey);
+    });
+  });
+
+  // day buttons
+  dayOrder.forEach(d => {
+    const btn = document.createElement("button");
+    btn.className = "day-button" + (d.key === currentDayKey ? " active" : "");
+    btn.dataset.dayKey = d.key;
+    const dot = document.createElement("span");
+    dot.className = "dot";
+    btn.appendChild(dot);
+    btn.appendChild(document.createTextNode("יום " + d.label));
+    btn.addEventListener("click", () => {
+      renderDay(d.key);
+    });
+    dayButtonsContainer.appendChild(btn);
+  });
+
+  dateInput.addEventListener("change", () => {
+    localStorage.setItem(dateStorageKey(currentDayKey), dateInput.value);
+  });
+
+  resetDayBtn.addEventListener("click", () => {
+    if (!confirm("לאפס את כל המשקלים, ההערות, הסטים וההיסטוריה ליום הזה?")) return;
+    const dayData = program[currentDayKey];
+    dayData.exercises.forEach((_, index) => {
+      localStorage.removeItem(storageKey(currentDayKey, index, "weight"));
+      localStorage.removeItem(storageKey(currentDayKey, index, "notes"));
+      localStorage.removeItem(storageKey(currentDayKey, index, "setsDone"));
+      localStorage.removeItem(historyKey(currentDayKey, index));
+    });
+    localStorage.removeItem(dateStorageKey(currentDayKey));
+    renderDay(currentDayKey);
+  });
+
+  goWorkoutModeBtn.addEventListener("click", () => {
+    setActivePage("workout");
+  });
+
+  exerciseSelect.addEventListener("change", () => {
+    currentChartExerciseIndex = parseInt(exerciseSelect.value, 10) || 0;
+    updateChart();
+  });
+
+  exportCsvBtn.addEventListener("click", exportHistoryToCsv);
+
+  // workout mode events
+  workoutDaySelect.addEventListener("change", () => {
+    workoutCurrentExerciseIndex = 0;
+    workoutCurrentSet = 1;
+    populateWorkoutExerciseList();
+    renderWorkoutCurrent();
+  });
+
+  workoutModeDate.addEventListener("change", () => {
+    const dayKey = workoutDaySelect.value || currentDayKey;
+    localStorage.setItem(dateStorageKey(dayKey), workoutModeDate.value);
+    if (dayKey === currentDayKey) {
+      dateInput.value = workoutModeDate.value;
+    }
+  });
+
+  finishSetBtn.addEventListener("click", () => {
+    const dayKey = workoutDaySelect.value || currentDayKey;
+    const dayData = program[dayKey];
+    const ex = dayData.exercises[workoutCurrentExerciseIndex];
+    const currentStored = parseInt(localStorage.getItem(storageKey(dayKey, workoutCurrentExerciseIndex, "setsDone")) || "0", 10);
+    const newVal = Math.min(currentStored + 1, ex.sets);
+    localStorage.setItem(storageKey(dayKey, workoutCurrentExerciseIndex, "setsDone"), newVal.toString());
+    workoutCurrentSet = Math.min(newVal + 1, ex.sets);
+    currentSetLabel.textContent = workoutCurrentSet.toString();
+    if (dayKey === currentDayKey) {
+      renderDay(dayKey);
+    }
+  });
+
+  nextExerciseBtn.addEventListener("click", () => {
+    const dayKey = workoutDaySelect.value || currentDayKey;
+    const dayData = program[dayKey];
+    workoutCurrentExerciseIndex = (workoutCurrentExerciseIndex + 1) % dayData.exercises.length;
+    workoutCurrentSet = 1;
+    renderWorkoutCurrent();
+  });
+
+  saveWorkoutWeightBtn.addEventListener("click", () => {
+    const dayKey = workoutDaySelect.value || currentDayKey;
+    const dayData = program[dayKey];
+    const ex = dayData.exercises[workoutCurrentExerciseIndex];
+    const weight = workoutWeightInput.value;
+    localStorage.setItem(storageKey(dayKey, workoutCurrentExerciseIndex, "weight"), weight);
+    const dateStr = workoutModeDate.value || dateInput.value;
+    if (dateStr) {
+      addHistoryEntry(dayKey, workoutCurrentExerciseIndex, dateStr, weight);
+      renderDayHistory(dayKey);
+      updateChart();
+      renderPRs();
+      renderHistoryPage();
+    }
+    if (dayKey === currentDayKey) {
+      renderDay(dayKey);
+    }
+    alert(`נשמר משקל ${weight} ק״ג ל-${ex.name}`);
+  });
+
+  startRestBtn.addEventListener("click", () => {
+    const seconds = parseInt(restSelect.value || "90", 10);
+    startRestTimer(seconds);
+  });
+
+  // settings
+  loadDefaultRest();
+  defaultRestSelect.addEventListener("change", saveDefaultRest);
+  resetAllDataBtn.addEventListener("click", resetAllData);
+
+  // initial render
+  renderDay(currentDayKey);
+  populateWorkoutDaySelect();
+  populateWorkoutExerciseList();
+  renderWorkoutCurrent();
+  renderExerciseLibrary();
+  renderHistoryPage();
+  renderPRs();
+</script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      let loginRequested = false;
+      try { auth.signOut(); } catch (e) {}
+
+      const OWNER_EMAIL = "Ariel0202nagar@gmail.com";
+
+      const authScreenEl   = document.getElementById("auth-screen");
+      const emailInput     = document.getElementById("loginEmail");
+      const passInput      = document.getElementById("loginPass");
+      const errorEl        = document.getElementById("authError");
+      const titleEl        = document.getElementById("authTitle");
+      const subtitleEl     = document.getElementById("authSubtitle");
+      const btnEl          = document.getElementById("loginBtn");
+      const switchTextEl   = document.getElementById("authSwitchText");
+      const switchLinkEl   = document.getElementById("authSwitchLink");
+      const forgotPassLink = document.getElementById("forgotPassLink");
+
+      let mode        = "login"; // "login" / "register"
+      let currentUid  = null;
+      let isSyncing   = false;
+      let pendingSync = false;
+
+      function setMode(nextMode) {
+        mode = nextMode;
+        errorEl.style.display = "none";
+
+        if (mode === "login") {
+          titleEl.textContent    = "התחברות למערכת";
+          subtitleEl.textContent = "הזן אימייל וסיסמה כדי להיכנס למערכת האימונים האישית שלך בענן.";
+          btnEl.textContent      = "המשך למערכת";
+          switchTextEl.textContent = "אין לך משתמש עדיין?";
+          switchLinkEl.textContent = "יצירת חשבון חדש";
+        } else {
+          titleEl.textContent    = "יצירת חשבון חדש";
+          subtitleEl.textContent = "צור משתמש חדש למערכת. האימונים שלך יישמרו לחשבון הזה בענן.";
+          btnEl.textContent      = "יצירת חשבון";
+          switchTextEl.textContent = "כבר יש לך משתמש?";
+          switchLinkEl.textContent = "התחברות קיימת";
+        }
+      }
+
+      setMode("login");
+
+      if (switchLinkEl) {
+        switchLinkEl.addEventListener("click", () => {
+          setMode(mode === "login" ? "register" : "login");
+        });
+      }
+
+      if (forgotPassLink) {
+        forgotPassLink.addEventListener("click", async () => {
+          const email = emailInput.value.trim();
+          errorEl.style.display = "none";
+
+          if (!email) {
+            errorEl.textContent = "כדי לאפס סיסמה, הזן קודם את כתובת האימייל שלך בשדה למעלה.";
+            errorEl.style.display = "block";
+            return;
+          }
+
+          try {
+            await auth.sendPasswordResetEmail(email);
+            errorEl.textContent = "אם האימייל קיים במערכת, נשלח אליך מייל לאיפוס הסיסמה.";
+            errorEl.style.display = "block";
+          } catch (err) {
+            console.error(err);
+            errorEl.textContent = "לא הצלחנו לשלוח מייל איפוס. בדוק את האימייל ונסה שוב.";
+            errorEl.style.display = "block";
+          }
+        });
+      }
+
+      function getLocalSnapshot() {
+        const data = {};
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          data[key] = localStorage.getItem(key);
+        }
+        return data;
+      }
+
+      function restoreFromSnapshot(snapshot) {
+        if (!snapshot) return;
+        Object.keys(snapshot).forEach((k) => {
+          try {
+            localStorage.setItem(k, snapshot[k]);
+          } catch (e) {
+            console.warn("localStorage set failed", k, e);
+          }
+        });
+      }
+
+      async function syncToCloud() {
+        if (!currentUid || isSyncing) {
+          pendingSync = true;
+          return;
+        }
+        isSyncing = true;
+        pendingSync = false;
+        try {
+          const snapshot = getLocalSnapshot();
+          await db.collection("training_states").doc(currentUid).set(
+            {
+              storage: snapshot,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            },
+            { merge: true }
+          );
+        } catch (err) {
+          console.error("syncToCloud error", err);
+        } finally {
+          isSyncing = false;
+          if (pendingSync) syncToCloud();
+        }
+      }
+
+      // כל שינוי ב-localStorage → סנכרון לענן
+      (function patchLocalStorage() {
+        const _setItem = localStorage.setItem;
+        const _removeItem = localStorage.removeItem;
+        localStorage.setItem = function (key, value) {
+          _setItem.call(localStorage, key, value);
+          syncToCloud();
+        };
+        localStorage.removeItem = function (key) {
+          _removeItem.call(localStorage, key);
+          syncToCloud();
+        };
+      })();
+
+      async function handleAuthClick() {
+        loginRequested = true;
+
+        const email = emailInput.value.trim();
+        const pass  = passInput.value;
+        errorEl.style.display = "none";
+
+        if (!email || !pass) {
+          errorEl.textContent = "נא למלא אימייל וסיסמה.";
+          errorEl.style.display = "block";
+          return;
+        }
+
+        try {
+          if (mode === "login") {
+            await auth.signInWithEmailAndPassword(email, pass);
+          } else {
+            await auth.createUserWithEmailAndPassword(email, pass);
+          }
+        } catch (err) {
+          console.error(err);
+          if (mode === "login") {
+            if (err.code === "auth/user-not-found") {
+              errorEl.textContent = "לא נמצא משתמש עם האימייל הזה. נסה ליצור חשבון חדש.";
+            } else if (err.code === "auth/wrong-password") {
+              errorEl.textContent = 'הסיסמה לא נכונה. אם שכחת, לחץ על "שכחתי סיסמה".';
+            } else {
+              errorEl.textContent = "לא הצלחנו להתחבר. בדוק את האימייל והסיסמה ונסה שוב.";
+            }
+          } else {
+            if (err.code === "auth/email-already-in-use") {
+              errorEl.textContent = "האימייל כבר קיים במערכת. עבור למסך התחברות.";
+            } else if (err.code === "auth/weak-password") {
+              errorEl.textContent = "הסיסמה חייבת להיות באורך של 6 תווים לפחות.";
+            } else {
+              errorEl.textContent = "לא הצלחנו ליצור את החשבון. בדוק את הפרטים ונסה שוב.";
+            }
+          }
+          errorEl.style.display = "block";
+          return;
+        }
+      }
+
+      if (btnEl) {
+        btnEl.addEventListener("click", handleAuthClick);
+      }
+
+      // לחשיפה לכפתור עם onclick
+      window.handleAuthClick = handleAuthClick;
+
+      auth.onAuthStateChanged(async (user) => {
+        // אם יש משתמש מחובר אבל לא ביקשנו להתחבר (אוטו לוגין) – להתנתק ולהראות מסך כניסה
+        if (user && !loginRequested) {
+          try { await auth.signOut(); } catch (e) {}
+          authScreenEl.style.display = "flex";
+          setMode("login");
+          return;
+        }
+
+        if (!user) {
+          authScreenEl.style.display = "flex";
+          setMode("login");
+          return;
+        }
+        currentUid = user.uid;
+        window.currentUid = currentUid;
+
+        try {
+          // Load from cloud
+          const docRef = db.collection("training_states").doc(user.uid);
+          const snap   = await docRef.get();
+
+          if (snap.exists) {
+            const data = snap.data();
+            if (data && data.storage) {
+              restoreFromSnapshot(data.storage);
+            }
+          } else {
+            await docRef.set(
+              {
+                storage: getLocalSnapshot(),
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+              },
+              { merge: true }
+            );
+          }
+
+          // Update users/{uid} with role (נמשוך מ-users אם קיים, אחרת לפי מייל בעלים)
+          let resolvedRole;
+          try {
+            const userRef = db.collection("users").doc(user.uid);
+            const userSnap = await userRef.get();
+            const data = userSnap.exists ? userSnap.data() : {};
+
+            if (data && (data.role === "owner" || data.role === "trainer" || data.role === "trainee")) {
+              resolvedRole = data.role;
+            } else if (user.email && user.email.toLowerCase() === OWNER_EMAIL.toLowerCase()) {
+              resolvedRole = "owner";
+            } else {
+              resolvedRole = "trainee";
+            }
+
+            await userRef.set(
+              {
+                email: user.email || "",
+                role: resolvedRole,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+              },
+              { merge: true }
+            );
+          } catch (err) {
+            console.error("Error resolving user role", err);
+            resolvedRole =
+              user.email && user.email.toLowerCase() === OWNER_EMAIL.toLowerCase()
+                ? "owner"
+                : "trainee";
+          }
+
+          // update UI role
+          if (typeof currentUserRole !== "undefined") {
+            currentUserRole = resolvedRole;
+          }
+          if (typeof currentUserEmail !== "undefined") {
+            currentUserEmail = user.email || "";
+          }
+          if (typeof applyRoleToUI === "function") {
+            applyRoleToUI();
+          }
+
+          // hide overlay
+          authScreenEl.style.opacity = "0";
+          setTimeout(() => {
+            authScreenEl.style.display = "none";
+          }, 220);
+        } catch (err) {
+          console.error("post-login error", err);
+          errorEl.textContent =
+            "התחברת, אבל הייתה בעיה בטעינת המידע מהענן. נסה לרענן את הדף.";
+          errorEl.style.display = "block";
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
